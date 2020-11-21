@@ -42,6 +42,10 @@ function default_settings!(m::AbstractDSGEModel)
     settings[:rate_expectations_source] = Setting(:rate_expectations_source, :ois,
         "Data source of expectations for anticipated shocks")
 
+	### my setting: add observable to model's estimation ### <-----------------------------------------
+	settings[:add_deposits] = Setting(:add_deposits, true,
+		"Whether to add data on deposits' interest rate")
+
     # Dates
     settings[:date_presample_start] = Setting(:date_presample_start, quartertodate("1959-Q3"),
         "Start date of pre-sample")
