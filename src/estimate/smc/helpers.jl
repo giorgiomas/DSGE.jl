@@ -187,3 +187,28 @@ function compute_ESS(loglh::Vector{T}, current_weights::Vector{T}, ϕ_n::T, ϕ_n
     ESS          = 1 / sum(norm_weights .^ 2)
     return ESS
 end
+
+function my_generate_param_blocks(free_para_inds::Vector{Int64}, n_blocks::Int64)
+    if n_blocks == 1     # n° of parameters' blocks, i.e. :n_mh_param_blocks
+        return [free_para_inds]
+    end
+
+    rand_inds = shuffle(free_para_inds)     # shuffle the indices of the parameter vector
+    n_params = length(free_para_inds)
+    subset_length     = cld(n_params, n_blocks) # ceiling division, if n_blocks=1 equal to the n_params
+    last_block_length = n_params - subset_length*(n_blocks - 1)
+
+    blocks_free = Vector{Vector{Int64}}(undef, n_blocks)
+    for i in 1:n_blocks
+        if i < n_blocks
+            # take the shuffled indices and assign them to the blocks
+            # e.g. if there are 3 blocks of 12 params, the first 12 elements of rand_inds go into block_free[1]
+            blocks_free[i] = rand_inds[((i-1)*subset_length + 1):(i*subset_length)]
+        else
+            # To account for the fact that the last block may be smaller than the others
+            blocks_free[i] = rand_inds[end-last_block_length+1:end]
+        end
+    end
+    blocks_free = [sort(p_block) for p_block in blocks_free]
+    return blocks_free
+end

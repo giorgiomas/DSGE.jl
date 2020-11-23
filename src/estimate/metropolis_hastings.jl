@@ -98,7 +98,7 @@ function metropolis_hastings(proposal_dist::Distribution,
     free_para_inds = findall([!θ.fixed for θ in parameters])
     n_free_para    = length(free_para_inds)
     n_params       = length(parameters)
-    blocks_all     = SMC.generate_param_blocks(n_free_para, n_param_blocks)
+    blocks_all     = my_generate_param_blocks(free_para_inds, n_param_blocks)
 
     # Report number of blocks that will be used
     println(verbose, :low, "Blocks: $n_blocks")
