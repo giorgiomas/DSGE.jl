@@ -735,7 +735,7 @@ function model_settings!(m::myModel1010)
     default_settings!(m)
 
     # Deposits' rate as observable   <---------------------------------------------------------
-    m <= Setting(:add_deposits, false,
+    m <= Setting(:add_deposits, true,
 		         "Whether to add data on deposits' interest rate")
 
     # Anticipated shocks
