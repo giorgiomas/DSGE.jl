@@ -63,3 +63,24 @@ Disclaimer
 Copyright Federal Reserve Bank of New York. You may reproduce, use, modify, make derivative works of, and distribute and this code in whole or in part so long as you keep this notice in the documentation associated with any distributed works. Neither the name of the Federal Reserve Bank of New York (FRBNY) nor the names of any of the authors may be used to endorse or promote works derived from this code without prior written permission. Portions of the code attributed to third parties are subject to applicable third party licenses and rights. By your use of this code you accept this license and any applicable third party license.
 
 THIS CODE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT ANY WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY WARRANTIES OR CONDITIONS OF TITLE, NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE, EXCEPT TO THE EXTENT THAT THESE DISCLAIMERS ARE HELD TO BE LEGALLY INVALID. FRBNY IS NOT, UNDER ANY CIRCUMSTANCES, LIABLE TO YOU FOR DAMAGES OF ANY KIND ARISING OUT OF OR IN CONNECTION WITH USE OF OR INABILITY TO USE THE CODE, INCLUDING, BUT NOT LIMITED TO DIRECT, INDIRECT, INCIDENTAL, CONSEQUENTIAL, PUNITIVE, SPECIAL OR EXEMPLARY DAMAGES, WHETHER BASED ON BREACH OF CONTRACT, BREACH OF WARRANTY, TORT OR OTHER LEGAL OR EQUITABLE THEORY, EVEN IF FRBNY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES OR LOSS AND REGARDLESS OF WHETHER SUCH DAMAGES OR LOSS IS FORESEEABLE.
+
+
+# My additions
+
+## Models
+I created a model called my1010, adding some elements to m1010:
+- equilibrium conditions (to keep track of some not specified variables):
+  - spread between the return on capital and the risk-free rate
+  - entrepreneurs' leverage
+  - convenience yield
+  - ex-ante real rate
+  - credit
+  - nominal deposit rate
+- pseudo-observables and related measurement equations:
+  - to compare model estimate vs actual path of variables observed with measurement error: GDP, GDI, PCE inflation, GDP deflator, Aaa spread, Baa spread, 10-year yield
+  - nominal deposit rate, real deposit rate, 10-year real yield
+- observable and measurement equation for the nominal interest rate on deposits:
+  - subject to an if-condition that checks the model setting `:add_deposits`: this is set to `true` in `defaults.jl`, and can be modified in `my1010.jl`
+
+## Estimation
+I fixed the bug in the Metropolis-Hastings step by building a new function in `estimate/smc/helpers.jl`, named `my_generate_param_blocks`; this is called in `metropolis-hastings.jl`.
