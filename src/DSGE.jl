@@ -241,7 +241,7 @@ module DSGE
 
     include("estimate/smc/particle.jl")
     #include("estimate/smc/initialization.jl")
-    #include("estimate/smc/helpers.jl")
+    include("estimate/smc/helpers.jl")
     #include("estimate/smc/util.jl")
     #include("estimate/smc/mutation.jl")
     #include("estimate/smc/resample.jl")

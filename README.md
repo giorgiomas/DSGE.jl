@@ -83,4 +83,4 @@ I created a model called my1010, adding some elements to m1010:
   - subject to an if-condition that checks the model setting `:add_deposits`: this is set to `true` in `defaults.jl`, and can be modified in `my1010.jl`
 
 ## Estimation
-I fixed the bug in the Metropolis-Hastings step by building a new function in `estimate/smc/helpers.jl`, named `my_generate_param_blocks`; this is called in `metropolis-hastings.jl`.
+I fixed the bug in the Metropolis-Hastings step by building a new function in `estimate/smc/helpers.jl`, named `my_generate_param_blocks`; this is called in `metropolis-hastings.jl`. In order for the function to be recognized, uncomment `include("estimate/smc/helpers.jl")` in `DSGE.jl`.
