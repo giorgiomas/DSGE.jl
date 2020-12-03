@@ -353,7 +353,7 @@ module DSGE
     include("models/representative/my1010/pseudo_measurement.jl")
     include("models/representative/my1010/augment_states.jl")
 
-    include("models/representative/m1010depo/m1010.jl")
+    include("models/representative/m1010depo/m1010depo.jl")
     include("models/representative/m1010depo/subspecs.jl")
     include("models/representative/m1010depo/eqcond.jl")
     include("models/representative/m1010depo/observables.jl")
@@ -362,7 +362,7 @@ module DSGE
     include("models/representative/m1010depo/pseudo_measurement.jl")
     include("models/representative/m1010depo/augment_states.jl")
 
-    include("models/representative/my1010depo/my1010.jl")
+    include("models/representative/my1010depo/my1010depo.jl")
     include("models/representative/my1010depo/subspecs.jl")
     include("models/representative/my1010depo/eqcond.jl")
     include("models/representative/my1010depo/observables.jl")
