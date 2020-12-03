@@ -158,7 +158,8 @@ module DSGE
         # models/
         init_parameters!, steadystate!, init_observable_mappings!,
         init_pseudo_observable_mappings!,
-        Model990, Model1002, Model1010, myModel1010, Model805, Model904, SmetsWouters, SmetsWoutersOrig, AnSchorfheide,
+        Model990, Model1002, Model1010, Model805, Model904, SmetsWouters, SmetsWoutersOrig, AnSchorfheide,
+        myModel1010, Model1010depo, myModel1010depo,
         PoolModel, eqcond, measurement, pseudo_measurement,
         shock_groupings, transition, DSGEVAR, DSGEVECM,
 
@@ -351,6 +352,24 @@ module DSGE
     include("models/representative/my1010/pseudo_observables.jl")
     include("models/representative/my1010/pseudo_measurement.jl")
     include("models/representative/my1010/augment_states.jl")
+
+    include("models/representative/m1010depo/m1010.jl")
+    include("models/representative/m1010depo/subspecs.jl")
+    include("models/representative/m1010depo/eqcond.jl")
+    include("models/representative/m1010depo/observables.jl")
+    include("models/representative/m1010depo/measurement.jl")
+    include("models/representative/m1010depo/pseudo_observables.jl")
+    include("models/representative/m1010depo/pseudo_measurement.jl")
+    include("models/representative/m1010depo/augment_states.jl")
+
+    include("models/representative/my1010depo/my1010.jl")
+    include("models/representative/my1010depo/subspecs.jl")
+    include("models/representative/my1010depo/eqcond.jl")
+    include("models/representative/my1010depo/observables.jl")
+    include("models/representative/my1010depo/measurement.jl")
+    include("models/representative/my1010depo/pseudo_observables.jl")
+    include("models/representative/my1010depo/pseudo_measurement.jl")
+    include("models/representative/my1010depo/augment_states.jl")
 
     include("models/representative/m805/m805.jl")
     include("models/representative/m805/subspecs.jl")
