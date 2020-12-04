@@ -1,4 +1,4 @@
-Model1010depo"""
+"""
 ```
 Model1010depo{T} <: AbstractRepModel{T}
 ```
