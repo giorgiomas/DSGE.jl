@@ -1,4 +1,4 @@
-myModel1010depo"""
+"""
 ```
 eqcond(m::myModel1010depo)
 ```
