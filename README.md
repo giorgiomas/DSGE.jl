@@ -79,8 +79,9 @@ I created a model called my1010, adding some elements to m1010:
 - pseudo-observables and related measurement equations:
   - to compare model estimate vs actual path of variables observed with measurement error: GDP, GDI, PCE inflation, GDP deflator, Aaa spread, Baa spread, 10-year yield
   - nominal deposit rate, real deposit rate, 10-year real yield
-- observable and measurement equation for the nominal interest rate on deposits:
-  - subject to an if-condition that checks the model setting `:add_deposits`: this is set to `true` in `defaults.jl`, and can be modified in `my1010.jl`
+
+Further, I added two models, called m1010depo and my1010depo, which are identical to m1010 and my1010 respectively, apart from the addition of the interest rate on deposits as observable (also the real deposit rate is included in the pseudo-observables).
+Only in my1010 and my1010depo, the observable and measurement equations for the nominal interest rate on deposits are subject to an if-condition that checks the model setting `:add_deposits`: this is set to `true` in `defaults.jl`, and can be modified in `my1010.jl` and `my1010depo.jl`
 
 ## Estimation
 I fixed the bug in the Metropolis-Hastings step by building a new function in `estimate/smc/helpers.jl`, named `my_generate_param_blocks`; this is called in `metropolis-hastings.jl`. In order for the function to be recognized, uncomment `include("estimate/smc/helpers.jl")` in `DSGE.jl`.
