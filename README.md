@@ -81,7 +81,20 @@ I created a model called my1010, adding some elements to m1010:
   - nominal deposit rate, real deposit rate, 10-year real yield
 
 Further, I added two models, called m1010depo and my1010depo, which are identical to m1010 and my1010 respectively, apart from the addition of the interest rate on deposits as observable (also the real deposit rate is included in the pseudo-observables).
-Only in my1010 and my1010depo, the observable and measurement equations for the nominal interest rate on deposits are subject to an if-condition that checks the model setting `:add_deposits`: this is set to `true` in `defaults.jl`, and can be modified in `my1010.jl` and `my1010depo.jl`
+Only in my1010 and my1010depo, the observable and measurement equations for the nominal interest rate on deposits are subject to an if-condition that checks the model setting `:add_deposits`: this is set to `true` in `defaults.jl`, and can be modified in `my1010.jl` and `my1010depo.jl`.
+
+`m1010depo_alt` is another version of `m1010`, where
+- the deposit rate is added as observable,
+- the Baa-Treasury spread and the Aaa-Treasury spread are dropped from the observables, in order to make the model comparable, in terms of data, to Smets and Wouters (2007).
+The distinction between liquidity and safety is therefore omitted, while the distinction between transient and permanent convenience yield shocks is maintained; accordingly, the measurement errors on the two spreads are also deleted, while the steady state convenience yield is set equal to the sum of the steady state liquidity and safety components.
+
+## Input data
+So far, the data considered for interest rate on deposits are:
+- the secondary market interest rate on 3-month certificates of deposits, available since 1964:III (source is the OECD but data are available on FRED as `IR3TCD01USQ156N`)
+- the arithmetic average of secondary market interest rates on 1-, 3-, and 6-month certificates of deposits, together available from 1966:I to 2013:II (`CD1M`, `CD3M`, and `CD6M` on FRED); these are the data used by Hollander and Liu (2016), and Pesaran and Xu (2016)
+Actually, `IR3TCD01USQ156N` and `CD3M` coincide.
+
 
 ## Estimation
 I fixed the bug in the Metropolis-Hastings step by building a new function in `estimate/smc/helpers.jl`, named `my_generate_param_blocks`; this is called in `metropolis-hastings.jl`. In order for the function to be recognized, uncomment `include("estimate/smc/helpers.jl")` in `DSGE.jl`.
+Whenever, we run estimation without reoptimizing, that is we compute the posterior distribution starting from the pre-computed mode and Hessian, we should check that the correct files are in `input_data/user/model_name`, and we should check that the correct path is specified in the main file.
