@@ -702,7 +702,7 @@ function model_settings!(m::Model1010depo_alt)
 
     # Data
     m <= Setting(:data_id, 4, "Dataset identifier")
-    m <= Setting(:cond_full_names, [:obs_gdp, :obs_corepce :obs_nominalrate, :obs_longrate],
+    m <= Setting(:cond_full_names, [:obs_gdp, :obs_corepce, :obs_nominalrate, :obs_longrate],
                  "Observables used in conditional forecasts")
     m <= Setting(:cond_semi_names, [:obs_nominalrate, :obs_longrate],
                  "Observables used in semiconditional forecasts")
