@@ -543,16 +543,9 @@ function model_settings!(m::Model805_alt)
     m <= Setting(:n_anticipated_shocks, 6)
     m <= Setting(:n_anticipated_shocks_padding, 20)
 
-    # Data vintage
-    m <= Setting(:data_vintage, "150827")
-
     # Conditional data variables
     m <= Setting(:cond_semi_names, [:obs_nominalrate])
     m <= Setting(:cond_full_names, [:obs_gdp, :obs_nominalrate])
-
-    # Estimation
-    m <= Setting(:reoptimize, true)
-    m <= Setting(:recalculate_hessian, true)
 
     # Forecast
     m <= Setting(:forecast_pseudoobservables, false)
