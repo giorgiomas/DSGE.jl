@@ -172,7 +172,7 @@ function init_model_indices!(m::Model805_alt)
     for (i,k) in enumerate(pseudo_observables);          m.pseudo_observables[k]          = i end
 end
 
-function Model805_alt(subspec::String="ss0";
+function Model805_alt(subspec::String="ss20";
                       custom_settings::Dict{Symbol, Setting} = Dict{Symbol, Setting}(),
                       testing = false)
 
