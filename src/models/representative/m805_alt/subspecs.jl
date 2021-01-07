@@ -23,6 +23,8 @@ function init_subspec!(m::Model805_alt)
         # Diffuse prior but keep pi* the same
         ss3!(m)
         ss4!(m)
+    elseif subspec(m) == "ss20"
+        ss20!(m)
     else
         error("This subspec is not defined.")
     end
@@ -225,7 +227,7 @@ function ss4!(m::Model805_alt)
 end
 
 function ss20!(m::Model805_alt)
-    # ss13 with ρ_z_p fixed at 0.99
+    # same specification use for Model1010depo_alt
 
     m <= parameter(:σ_b_p, sqrt(1/400)/4, (1e-8, 5.), (1e-8, 5.), ModelConstructors.Exponential(), RootInverseGamma(100., sqrt(1/400)/4),
                    fixed=false,
