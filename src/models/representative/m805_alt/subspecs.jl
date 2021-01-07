@@ -1,11 +1,11 @@
 """
-`init_subspec!(m::Model805)`
+`init_subspec!(m::Model805_alt)`
 
 Initializes a model subspecification by overwriting parameters from
 the original model object with new parameter objects. This function is
 called from within the model constructor.
 """
-function init_subspec!(m::Model805)
+function init_subspec!(m::Model805_alt)
 
     if subspec(m) == "ss0"
         # Use σ_r_m as SD for all anticipated shocks without normalizing
@@ -31,7 +31,7 @@ end
 
 
 # Diffuse prior
-function ss3!(m::Model805)
+function ss3!(m::Model805_alt)
 
     m <= parameter(:α,      0.1687, (1e-5, 0.999), (1e-5, 0.999),   SquareRoot(),     Normal(0.30, 0.15),         fixed=false,
                    description="α: Capital elasticity in the intermediate goods sector's Cobb-Douglas production function.",
@@ -218,13 +218,13 @@ m <= parameter(:η_λ_w,      0.8936, (1e-5, 0.999), (1e-5, 0.999), SquareRoot()
 end
 
 
-function ss4!(m::Model805)
+function ss4!(m::Model805_alt)
     m <= parameter(:π_star,   0.6231, (1e-5, 10.),   (1e-5, 10.),     ModelConstructors.Exponential(),    GammaAlt(0.75, 0.4),        fixed=false,  scaling = x -> 1 + x/100,
                    description="π_star: The steady-state rate of inflation.",
                    tex_label="\\pi_*")
 end
 
-function ss20!(m::Model805)
+function ss20!(m::Model805_alt)
     # ss13 with ρ_z_p fixed at 0.99
 
     m <= parameter(:σ_b_p, sqrt(1/400)/4, (1e-8, 5.), (1e-8, 5.), ModelConstructors.Exponential(), RootInverseGamma(100., sqrt(1/400)/4),

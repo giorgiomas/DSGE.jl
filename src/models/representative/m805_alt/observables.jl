@@ -1,4 +1,4 @@
-function init_observable_mappings!(m::Model805)
+function init_observable_mappings!(m::Model805_alt)
 
     observables = OrderedDict{Symbol,Observable}()
     population_mnemonic = get(get_setting(m, :population_mnemonic))

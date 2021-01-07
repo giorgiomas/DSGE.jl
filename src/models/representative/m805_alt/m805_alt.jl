@@ -1,7 +1,7 @@
 """
-Model805{T} <: AbstractDSGEModel{T}
+Model805_alt{T} <: AbstractDSGEModel{T}
 
-The Model805 type defines the structure of the Smets & Wouters (2007) model augmented
+The Model805_alt type defines the structure of the Smets & Wouters (2007) model augmented
 with long run inflation expetations. We can then concisely pass around a Model object
 to the remaining steps of the model (solve, estimate, and forecast).
 
@@ -80,7 +80,7 @@ seeded to ensure replicability in algorithms that involve randomness
   dictionary that stores names and transformations to/from model units. See
   `PseudoObservable` for further details.
 """
-mutable struct Model805{T} <: AbstractDSGEModel{T}
+mutable struct Model805_alt{T} <: AbstractDSGEModel{T}
     parameters::ParameterVector{T}                  # vector of all time-invariant model parameters
     steady_state::ParameterVector{T}                # model steady-state values
     keys::OrderedDict{Symbol,Int}                   # human-readable names for all the model
@@ -105,18 +105,18 @@ mutable struct Model805{T} <: AbstractDSGEModel{T}
     pseudo_observable_mappings::OrderedDict{Symbol, PseudoObservable}
 end
 
-description(m::Model805) = "Smets-Wouters model, with long run inflation expectations"
+description(m::Model805_alt) = "Smets-Wouters model, with long run inflation expectations"
 
 """
-`init_model_indices!(m::Model805)`
+`init_model_indices!(m::Model805_alt)`
 
 Arguments:
-`m:: Model805`: a model object
+`m:: Model805_alt`: a model object
 
 Description:
 Initializes indices for all of `m`'s states, shocks, and equilibrium conditions.
 """
-function init_model_indices!(m::Model805)
+function init_model_indices!(m::Model805_alt)
     # Endogenous states
     endogenous_states = [[
         :y_t, :c_t, :i_t, :qk_t, :k_t, :kbar_t, :u_t, :rk_t, :mc_t,
@@ -172,7 +172,7 @@ function init_model_indices!(m::Model805)
     for (i,k) in enumerate(pseudo_observables);          m.pseudo_observables[k]          = i end
 end
 
-function Model805(subspec::String="ss0";
+function Model805_alt(subspec::String="ss0";
                       custom_settings::Dict{Symbol, Setting} = Dict{Symbol, Setting}(),
                       testing = false)
 
@@ -184,7 +184,7 @@ function Model805(subspec::String="ss0";
     rng                = MersenneTwister(0)        # Random Number Generator
 
     # initialize empty model
-    m = Model805{Float64}(
+    m = Model805_alt{Float64}(
             # model parameters and steady state values
             Vector{AbstractParameter{Float64}}(), Vector{Float64}(), OrderedDict{Symbol,Int}(),
 
@@ -220,14 +220,14 @@ end
 
 """
 ```
-init_parameters!(m::Model805)
+init_parameters!(m::Model805_alt)
 ```
 
 Initializes the model's parameters, as well as empty values for the steady-state
 parameters (in preparation for `steadystate!(m)` being called to initialize
 those).
 """
-function init_parameters!(m::Model805)
+function init_parameters!(m::Model805_alt)
     m <= parameter(:α,      0.1687, (1e-5, 0.999), (1e-5, 0.999),   SquareRoot(),     Normal(0.30, 0.05),         fixed=false,
                    description="α: Capital elasticity in the intermediate goods sector's Cobb-Douglas production function.",
                    tex_label="\\alpha")
@@ -512,12 +512,12 @@ end
 
 """
 ```
-steadystate!(m::Model805)
+steadystate!(m::Model805_alt)
 ```
 
 Calculates the model's steady-state values. `steadystate!(m)` must be called whenever the parameters of `m` are updated.
 """
-function steadystate!(m::Model805)
+function steadystate!(m::Model805_alt)
     m[:zstar]    = log(1+m[:γ]) + m[:α]/(1-m[:α])*log(m[:Upsilon])
     m[:rstar]    = exp(m[:σ_c]*m[:zstar]) / m[:β]
     m[:Rstarn]   = 100*(m[:rstar]*m[:π_star] - 1)

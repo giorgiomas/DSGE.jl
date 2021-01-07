@@ -41,7 +41,7 @@ The diagram below shows how `TTT` is extended to `TTT_aug`.
     |_________________________________|
 
 """
-function augment_states(m::Model805{T}, TTT::Matrix{T}, RRR::Matrix{T}, CCC::Vector{T}) where {T<:AbstractFloat}
+function augment_states(m::Model805_alt{T}, TTT::Matrix{T}, RRR::Matrix{T}, CCC::Vector{T}) where {T<:AbstractFloat}
     endo = m.endogenous_states
     endo_addl = m.endogenous_states_augmented
     exo = m.exogenous_shocks

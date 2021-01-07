@@ -1,6 +1,6 @@
 """
 ```
-measurement{T<:AbstractFloat}(m::Model805{T}, TTT::Matrix{T}, RRR::Matrix{T},
+measurement{T<:AbstractFloat}(m::Model805_alt{T}, TTT::Matrix{T}, RRR::Matrix{T},
                               CCC::Vector{T})
 ```
 
@@ -18,7 +18,7 @@ Var(u_t) = EE
 Cov(ϵ_t, u_t) = 0
 ```
 """
-function measurement(m::Model805{T},
+function measurement(m::Model805_alt{T},
                                        TTT::Matrix{T},
                                        RRR::Matrix{T},
                                        CCC::Vector{T}) where {T<:AbstractFloat}
