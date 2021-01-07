@@ -535,7 +535,7 @@ function steadystate!(m::Model805_alt)
 end
 
 
-function model_settings!(m::Model805)
+function model_settings!(m::Model805_alt)
 
     default_settings!(m)
 
@@ -562,7 +562,7 @@ end
 
 """
 ```
-parameter_groupings(m::Model1010depo_alt)
+parameter_groupings(m::Model805_alt)
 ```
 
 Returns an `OrderedDict{String, Vector{Parameter}}` mapping descriptions of
@@ -570,7 +570,7 @@ parameter groupings (e.g. \"Policy Parameters\") to vectors of
 `Parameter`s. This dictionary is passed in as a keyword argument to
 `prior_table`.
 """
-function parameter_groupings(m::Model1010depo_alt)
+function parameter_groupings(m::Model805_alt)
     steadystate = [:γ, :α, :β, :σ_c, :h, :ν_l, :δ, :Φ, :S′′, :ppsi,
                    :δ_gdpdef, :Lmean, :λ_w, :π_star, :g_star]
 
