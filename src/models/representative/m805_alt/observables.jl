@@ -6,11 +6,11 @@ function init_observable_mappings!(m::Model805_alt)
     ############################################################################
     ## 1. GDP
     ############################################################################
-    gdp_fwd_transform = function (levels)
+    gdp_fwd_transform =  function (levels)
         # FROM: Level of nominal GDP (FRED :GDP series)
         # TO:   Quarter-to-quarter percent change of real, per-capita GDP, adjusted for population smoothing
 
-        levels[:temp] = percapita(m, :GDP, levels)
+        levels[!,:temp] = percapita(m, :GDP, levels)
         gdp = 1000 * nominal_to_real(:temp, levels)
         oneqtrpctchange(gdp)
     end
@@ -25,12 +25,12 @@ function init_observable_mappings!(m::Model805_alt)
     ## 2. Hours per-capita
     ############################################################################
 
-    hrs_fwd_transform = function (levels)
+    hrs_fwd_transform =  function (levels)
         # FROM: Average weekly hours (AWHNONAG) & civilian employment (CE16OV)
         # TO:   log (3 * per-capita weekly hours / 100)
         # Note: Not sure why the 3 is there.
 
-        levels[:temp] = levels[:AWHNONAG] .* levels[:CE16OV]
+        levels[!,:temp] = levels[!,:AWHNONAG] .* levels[!,:CE16OV]
         weeklyhours = percapita(m, :temp, levels)
         100*log.(3 * weeklyhours / 100)
     end
@@ -40,6 +40,7 @@ function init_observable_mappings!(m::Model805_alt)
     observables[:obs_hours] = Observable(:obs_hours, [:AWHNONAG__FRED, :CE16OV__FRED],
                                          hrs_fwd_transform, hrs_rev_transform,
                                          "Hours Per Capita", "Log Hours Per Capita")
+
 
     ############################################################################
     ## 3. Wages
@@ -63,12 +64,12 @@ function init_observable_mappings!(m::Model805_alt)
     ## 4. GDP Deflator
     ############################################################################
 
-    gdpdeflator_fwd_transform = function (levels)
+    gdpdeflator_fwd_transform =  function (levels)
         # FROM: GDP deflator (index)
         # TO:   Approximate quarter-to-quarter percent change of gdp deflator,
         #       i.e.  quarterly gdp deflator inflation
 
-        oneqtrpctchange(levels[:GDPDEF])
+        oneqtrpctchange(levels[!,:GDPDEF])
     end
 
 
@@ -79,28 +80,28 @@ function init_observable_mappings!(m::Model805_alt)
                                                "GDP Deflator",
                                                "Q-to-Q Percent Change of GDP Deflator")
 
-                                               ############################################################################
-                                               ## 4b. Core PCE Inflation
-                                               ############################################################################
+    ############################################################################
+    ## 5. Core PCE Inflation
+    ############################################################################
 
-                                               pce_fwd_transform = function (levels)
-                                                   # FROM: Core PCE index
-                                                   # INTO: Approximate quarter-to-quarter percent change of Core PCE,
-                                                   # i.e. quarterly core pce inflation
+    pce_fwd_transform = function (levels)
+        # FROM: Core PCE index
+        # INTO: Approximate quarter-to-quarter percent change of Core PCE,
+        # i.e. quarterly core pce inflation
 
-                                                   oneqtrpctchange(levels[!,:PCEPILFE])
-                                               end
+        oneqtrpctchange(levels[!,:PCEPILFE])
+    end
 
-                                               pce_rev_transform = loggrowthtopct_annualized
+    pce_rev_transform = loggrowthtopct_annualized
 
-                                               observables[:obs_corepce] = Observable(:obs_corepce, [:PCEPILFE__FRED],
-                                                                                      pce_fwd_transform, pce_rev_transform,
-                                                                                      "Core PCE Inflation",
-                                                                                      "Core PCE Inflation")
+    observables[:obs_corepce] = Observable(:obs_corepce, [:PCEPILFE__FRED],
+                                           pce_fwd_transform, pce_rev_transform,
+                                           "Core PCE Inflation",
+                                           "Core PCE Inflation")
 
 
     ############################################################################
-    ## 5. Nominal short-term interest rate (3 months)
+    ## 6. Nominal short-term interest rate (3 months)
     ############################################################################
 
     nominalrate_fwd_transform = function (levels)
@@ -108,7 +109,7 @@ function init_observable_mappings!(m::Model805_alt)
         #       quarterly frequency at an annual rate)
         # TO:   Nominal effective fed funds rate, at a quarterly rate
 
-        annualtoquarter(levels[:DFF])
+        annualtoquarter(levels[!,:DFF])
     end
 
     nominalrate_rev_transform = quartertoannual
@@ -119,7 +120,7 @@ function init_observable_mappings!(m::Model805_alt)
                                                "Nominal Effective Fed Funds Rate")
 
     ############################################################################
-    ## 6. Consumption
+    ## 7. Consumption
     ############################################################################
 
     consumption_fwd_transform = function (levels)
@@ -127,7 +128,7 @@ function init_observable_mappings!(m::Model805_alt)
         # TO:   Real consumption, approximate quarter-to-quarter percent change,
         #       per capita, adjusted for population filtering
 
-        levels[:temp] = percapita(m, :PCE, levels)
+        levels[!,:temp] = percapita(m, :PCE, levels)
         cons = 1000 * nominal_to_real(:temp, levels)
         oneqtrpctchange(cons)
     end
@@ -139,8 +140,9 @@ function init_observable_mappings!(m::Model805_alt)
                                                "Consumption growth per capita",
                                                "Consumption growth adjusted for population filtering")
 
+
     ############################################################################
-    ## 7. Investment growth per capita
+    ## 8. Investment growth per capita
     ############################################################################
 
     investment_fwd_transform = function (levels)
@@ -148,7 +150,7 @@ function init_observable_mappings!(m::Model805_alt)
         # INTO: Real investment, approximate quarter-to-quarter percent change,
         #       per capita, adjusted for population filtering
 
-        levels[:temp] = percapita(m, :FPI, levels)
+        levels[!,:temp] = percapita(m, :FPI, levels)
         inv = 10000 * nominal_to_real(:temp, levels)
         oneqtrpctchange(inv)
     end
@@ -160,18 +162,19 @@ function init_observable_mappings!(m::Model805_alt)
                                               "Real Investment per capita",
                                               "Real investment per capita, adjusted for population filtering")
 
+
     ############################################################################
-    ## 8. Long term inflation expectations
+    # 10. Long term inflation expectations
     ############################################################################
 
     longinflation_fwd_transform = function (levels)
         # FROM: SPF: 10-Year average yr/yr CPI inflation expectations (annual percent)
         # TO:   FROM, less 0.5
-        # NOTE: We subtract 0.5 because 0.5% inflation corresponds to
+        # Note: We subtract 0.5 because 0.5% inflation corresponds to
         #       the assumed long-term rate of 2 percent inflation, but the
         #       data are measuring expectations of actual inflation.
 
-        annualtoquarter(levels[:ASACX10] .- 0.5)
+        annualtoquarter(levels[!,:ASACX10]  .- 0.5)
     end
 
     longinflation_rev_transform = loggrowthtopct_annualized
@@ -182,80 +185,80 @@ function init_observable_mappings!(m::Model805_alt)
                                                  "10-year average yr/yr CPI inflation expectations")
 
 
-                                                 ############################################################################
-                                                 # 9. Long rate (10-year, zero-coupon)
-                                                 ############################################################################
-                                                 longrate_fwd_transform = function (levels)
-                                                     # FROM: pre-computed long rate at an annual rate
-                                                     # TO:   10T yield at a quarterly rate
+    ############################################################################
+    # 11. Long rate (10-year, zero-coupon)
+    ############################################################################
+    longrate_fwd_transform = function (levels)
+        # FROM: pre-computed long rate at an annual rate
+        # TO:   10T yield at a quarterly rate
 
-                                                     annualtoquarter(levels[!,:FYCCZA])
-                                                 end
+        annualtoquarter(levels[!,:FYCCZA])
+    end
 
-                                                 longrate_rev_transform = quartertoannual
+    longrate_rev_transform = quartertoannual
 
-                                                 observables[:obs_longrate] = Observable(:obs_longrate, [:FYCCZA__DLX],
-                                                                                         longrate_fwd_transform, longrate_rev_transform,
-                                                                                         "Long term interest rate expectations",
-                                                                                         "10T yield")
+    observables[:obs_longrate] = Observable(:obs_longrate, [:FYCCZA__DLX],
+                                            longrate_fwd_transform, longrate_rev_transform,
+                                            "Long term interest rate expectations",
+                                            "10T yield")
 
 
-                                                 ############################################################################
-                                                 # 10. Fernald TFP
-                                                 ############################################################################
-                                                 tfp_fwd_transform =  function (levels)
-                                                     # FROM: Fernald's unadjusted TFP series
-                                                     # TO:   De-meaned unadjusted TFP series, adjusted by Fernald's
-                                                     #       estimated alpha
-                                                     # Note: We only want to calculate the mean of unadjusted TFP over the
-                                                     #       periods between date_presample_start(m) - 1 and
-                                                     #       date_mainsample_end(m), though we may end up transforming
-                                                     #       additional periods of data.
+    ############################################################################
+    # 12. Fernald TFP
+    ############################################################################
+    tfp_fwd_transform =  function (levels)
+        # FROM: Fernald's unadjusted TFP series
+        # TO:   De-meaned unadjusted TFP series, adjusted by Fernald's
+        #       estimated alpha
+        # Note: We only want to calculate the mean of unadjusted TFP over the
+        #       periods between date_presample_start(m) - 1 and
+        #       date_mainsample_end(m), though we may end up transforming
+        #       additional periods of data.
 
-                                                     start_date = Dates.lastdayofquarter(date_presample_start(m) - Dates.Month(3))
-                                                     end_date   = date_mainsample_end(m)
-                                                     date_range = start_date .<= levels[!, :date] .<= end_date
-                                                     tfp_unadj_inrange = levels[date_range, :TFPKQ]
+        start_date = Dates.lastdayofquarter(date_presample_start(m) - Dates.Month(3))
+        end_date   = date_mainsample_end(m)
+        date_range = start_date .<= levels[!, :date] .<= end_date
+        tfp_unadj_inrange = levels[date_range, :TFPKQ]
 
-                                                     tfp_unadj      = levels[!,:TFPKQ]
-                                                     tfp_unadj_inrange_nonmissing = tfp_unadj_inrange[.!ismissing.(tfp_unadj_inrange)]
-                                                     tfp_unadj_inrange_nonmissing = tfp_unadj_inrange_nonmissing[.!isnan.(tfp_unadj_inrange_nonmissing)]
-                                                     tfp_unadj_mean = isempty(tfp_unadj_inrange_nonmissing) ? missing : mean(tfp_unadj_inrange_nonmissing)
-                                                     (tfp_unadj .- tfp_unadj_mean) ./ (4*(1 .- levels[!,:TFPJQ]))
-                                                 end
+        tfp_unadj      = levels[!,:TFPKQ]
+        tfp_unadj_inrange_nonmissing = tfp_unadj_inrange[.!ismissing.(tfp_unadj_inrange)]
+        tfp_unadj_inrange_nonmissing = tfp_unadj_inrange_nonmissing[.!isnan.(tfp_unadj_inrange_nonmissing)]
+        tfp_unadj_mean = isempty(tfp_unadj_inrange_nonmissing) ? missing : mean(tfp_unadj_inrange_nonmissing)
+        (tfp_unadj .- tfp_unadj_mean) ./ (4*(1 .- levels[!,:TFPJQ]))
+    end
 
-                                                 tfp_rev_transform = quartertoannual
+    tfp_rev_transform = quartertoannual
 
-                                                 observables[:obs_tfp] = Observable(:obs_tfp, [:TFPKQ__DLX, :TFPJQ__DLX],
-                                                                                    tfp_fwd_transform, tfp_rev_transform,
-                                                                                    "Total Factor Productivity",
-                                                                                    "Fernald's TFP, adjusted by Fernald's estimated alpha")
+    observables[:obs_tfp] = Observable(:obs_tfp, [:TFPKQ__DLX, :TFPJQ__DLX],
+                                       tfp_fwd_transform, tfp_rev_transform,
+                                       "Total Factor Productivity",
+                                       "Fernald's TFP, adjusted by Fernald's estimated alpha")
 
-                                                 ############################################################################
-                                                 # 11. GDI
-                                                 ############################################################################
-                                                 gdi_fwd_transform = function (levels)
-                                                     # FROM: level of real per-capita income (FRED mnemonic: GDI)
-                                                     # TO:   approximate quarter-to-quarter percent change of real, per-capita income, adjusted
-                                                     #       for population smoothing
+    ############################################################################
+    # 13. GDI
+    ############################################################################
+    gdi_fwd_transform = function (levels)
+        # FROM: level of real per-capita income (FRED mnemonic: GDI)
+        # TO:   approximate quarter-to-quarter percent change of real, per-capita income, adjusted
+        #       for population smoothing
 
-                                                     levels[!,:temp] = percapita(m, :GDI, levels)
-                                                     gdi = 1000 * nominal_to_real(:temp, levels)
-                                                     oneqtrpctchange(gdi)
-                                                 end
+        levels[!,:temp] = percapita(m, :GDI, levels)
+        gdi = 1000 * nominal_to_real(:temp, levels)
+        oneqtrpctchange(gdi)
+    end
 
-                                                 gdi_rev_transform = loggrowthtopct_annualized_percapita
+    gdi_rev_transform = loggrowthtopct_annualized_percapita
 
-                                                 observables[:obs_gdi] = Observable(:obs_gdi, [:GDI__FRED],
-                                                                                    gdi_fwd_transform, gdi_rev_transform,
-                                                                                    "Real GDI Growth",
-                                                                                    "Real GDI Growth Per Capita")
+    observables[:obs_gdi] = Observable(:obs_gdi, [:GDI__FRED],
+                                       gdi_fwd_transform, gdi_rev_transform,
+                                       "Real GDI Growth",
+                                       "Real GDI Growth Per Capita")
 
 
 
 
     ############################################################################
-    ## 12 - (12 + n_anticipated_shocks)
+    # Columns 15 - 15 + n_anticipated_shocks
     ############################################################################
 
     for i = 1:n_anticipated_shocks(m)
@@ -263,7 +266,7 @@ function init_observable_mappings!(m::Model805_alt)
         # TO:   Same
 
         ant_fwd_transform = function (levels)
-            levels[:, Symbol("ant$i")]
+            levels[!, Symbol("ant$i")]
         end
 
         ant_rev_transform = quartertoannual
@@ -293,6 +296,6 @@ function init_observable_mappings!(m::Model805_alt)
                                                    nominalrate_fwd_transform, nominalrate_rev_transform,
                                                    "Nominal Deposit Rate",
                                                    "Nominal Interest Rate on 3-month Deposits")
-                                                   
-    m.observable_mappings = observables
+
+   m.observable_mappings = observables
 end
