@@ -543,6 +543,9 @@ function model_settings!(m::Model805_alt)
     m <= Setting(:n_anticipated_shocks, 6)
     m <= Setting(:n_anticipated_shocks_padding, 20)
 
+    # Data
+    m <= Setting(:data_id, 4, "Dataset identifier")
+
     # Conditional data variables
     m <= Setting(:cond_semi_names, [:obs_nominalrate])
     m <= Setting(:cond_full_names, [:obs_gdp, :obs_nominalrate])
