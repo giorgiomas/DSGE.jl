@@ -104,9 +104,9 @@ function measurement(m::Model805_alt{T},
 
     ## TFP
     ZZ[obs[:obs_tfp], endo[:z_t]]       = (1-m[:α])*0 + 1*(1-0)
-    ZZ[obs[:obs_tfp], endo_new[:tfp_t]] = 1.0
+    ZZ[obs[:obs_tfp], endo_addl[:tfp_t]] = 1.0
     ZZ[obs[:obs_tfp], endo[:u_t]]       = m[:α]/( (1-m[:α])*(1-0) + 1*0 )
-    ZZ[obs[:obs_tfp], endo_new[:u_t1]]  = -(m[:α]/( (1-m[:α])*(1-0) + 1*0) )
+    ZZ[obs[:obs_tfp], endo_addl[:u_t1]]  = -(m[:α]/( (1-m[:α])*(1-0) + 1*0) )
 
     QQ[exo[:g_sh], exo[:g_sh]]            = m[:σ_g]^2
     QQ[exo[:b_til_sh], exo[:b_til_sh]]    = m[:σ_b_til]^2
