@@ -42,7 +42,7 @@ function measurement(m::Model805_alt{T},
     ZZ[obs[:obs_gdp], endo[:z_t]]          = 1.0
     ZZ[obs[:obs_gdp], endo_addl[:e_gdp_t]]  = 1.0
     ZZ[obs[:obs_gdp], endo_addl[:e_gdp_t1]] = -m[:me_level]
-    DD[obs[:obs_gdp]]                      = 100*(exp(m[:z_star])-1)
+    DD[obs[:obs_gdp]]                      = 100*(exp(m[:zstar])-1)
 
     ## GDI growth- Quarterly!
     ZZ[obs[:obs_gdi], endo[:y_t]]          = m[:γ_gdi]
@@ -50,7 +50,7 @@ function measurement(m::Model805_alt{T},
     ZZ[obs[:obs_gdi], endo[:z_t]]          = m[:γ_gdi]
     ZZ[obs[:obs_gdi], endo_addl[:e_gdi_t]]  = 1.0
     ZZ[obs[:obs_gdi], endo_addl[:e_gdi_t1]] = -m[:me_level]
-    DD[obs[:obs_gdi]]                      = 100*(exp(m[:z_star])-1) + m[:δ_gdi]
+    DD[obs[:obs_gdi]]                      = 100*(exp(m[:zstar])-1) + m[:δ_gdi]
 
     ## Hours growth
     ZZ[obs[:obs_hours], endo[:L_t]] = 1.0
