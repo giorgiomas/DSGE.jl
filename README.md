@@ -88,6 +88,8 @@ Only in my1010 and my1010depo, the observable and measurement equations for the 
 - the Baa-Treasury spread and the Aaa-Treasury spread are dropped from the observables, in order to make the model comparable, in terms of data, to Smets and Wouters (2007).
 The distinction between liquidity and safety is therefore omitted, while the distinction between transient and permanent convenience yield shocks is maintained; accordingly, the measurement errors on the two spreads are also deleted, while the steady state convenience yield is set equal to the sum of the steady state liquidity and safety components.
 
+`m805_alt` is equivalent to `m1010depo_alt` stripped down of financial frictions. In other words, it is a version of the Smets and Wouters (2007) model, specified as the latest FRBNY model: that is, with a time-varying inflation target, stochastic non-stationary productivity growth, and anticipated monetary policy shocks; the observables are the same except for the corporate-Treasury bond spread. The risk premium shock is specified as the sum of a transient and a persistent component.
+
 ## Input data
 So far, the data considered for interest rate on deposits are:
 - the secondary market interest rate on 3-month certificates of deposits, available since 1964:III (source is the OECD but data are available on FRED as `IR3TCD01USQ156N`)
