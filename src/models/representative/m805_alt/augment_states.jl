@@ -69,6 +69,7 @@ function augment_states(m::Model805_alt{T}, TTT::Matrix{T}, RRR::Matrix{T}, CCC:
     TTT_aug[endo_addl[:w_t1], endo[:w_t]] = 1.0
     TTT_aug[endo_addl[:π_t1], endo[:π_t]] = 1.0
     TTT_aug[endo_addl[:L_t1], endo[:L_t]]  = 1.0
+    TTT_aug[endo_addl[:u_t1],     endo[:u_t]] = 1.0
     TTT_aug[endo_addl[:e_gdp_t1], endo_addl[:e_gdp_t]] = 1.0
     TTT_aug[endo_addl[:e_gdi_t1], endo_addl[:e_gdi_t]] = 1.0
 
