@@ -38,7 +38,7 @@ function eqcond(m::Model805_alt)
     Γ0[eq[:eq_euler], endo[:Eπ_t]]   = -(1 - m[:h]*exp(-m[:zstar]))/(m[:σ_c]*(1 + m[:h]*exp(-m[:zstar])))
     Γ0[eq[:eq_euler], endo[:z_t]]    = (m[:h]*exp(-m[:zstar]))/(1 + m[:h]*exp(-m[:zstar]))
     Γ0[eq[:eq_euler], endo[:Ec_t]]   = -1/(1 + m[:h]*exp(-m[:zstar]))
-    Γ0[eq[:eq_euler], endo[:Ez_t]] = -1/(1 + m[:h]*exp(-m[:z_star]))
+    Γ0[eq[:eq_euler], endo[:Ez_t]] = -1/(1 + m[:h]*exp(-m[:zstar]))
     Γ0[eq[:eq_euler], endo[:L_t]]    = -(m[:σ_c] - 1)*m[:wl_c]/(m[:σ_c]*(1 + m[:h]*exp(-m[:zstar])))
     Γ0[eq[:eq_euler], endo[:EL_t]]   = (m[:σ_c] - 1)*m[:wl_c]/(m[:σ_c]*(1 + m[:h]*exp(-m[:zstar])))
     Γ1[eq[:eq_euler], endo[:c_t]]    = (m[:h]*exp(-m[:zstar]))/(1 + m[:h]*exp(-m[:zstar]))
@@ -49,7 +49,7 @@ function eqcond(m::Model805_alt)
     Γ0[eq[:eq_euler_f], endo[:b_t]]   = -1.
     Γ0[eq[:eq_euler_f], endo[:z_t]]   =   (m[:h]*exp(-m[:zstar]))/(1 + m[:h]*exp(-m[:zstar]))
     Γ0[eq[:eq_euler_f], endo[:Ec_f_t]] = -1/(1 + m[:h]*exp(-m[:zstar]))
-    Γ0[eq[:eq_euler_f], endo[:Ez_t]]   = -1/(1 + m[:h]*exp(-m[:z_star]))
+    Γ0[eq[:eq_euler_f], endo[:Ez_t]]   = -1/(1 + m[:h]*exp(-m[:zstar]))
     Γ0[eq[:eq_euler_f], endo[:L_f_t]] = -(m[:σ_c] - 1)*m[:wl_c]/(m[:σ_c]*(1 + m[:h]*exp(-m[:zstar])))
     Γ0[eq[:eq_euler_f], endo[:EL_f_t]] = (m[:σ_c] - 1)*m[:wl_c]/(m[:σ_c]*(1 + m[:h]*exp(-m[:zstar])))
     Γ1[eq[:eq_euler_f], endo[:c_f_t]] = (m[:h]*exp(-m[:zstar]))/(1 + m[:h]*exp(-m[:zstar]))
@@ -64,7 +64,7 @@ function eqcond(m::Model805_alt)
     Γ0[eq[:eq_inv], endo[:z_t]]  = 1/(1 + m[:β]*exp((1 - m[:σ_c])*m[:zstar]))
     Γ1[eq[:eq_inv], endo[:i_t]]  = 1/(1 + m[:β]*exp((1 - m[:σ_c])*m[:zstar]))
     Γ0[eq[:eq_inv], endo[:Ei_t]]  = -m[:β]*exp((1 - m[:σ_c])*m[:zstar])/(1 + m[:β]*exp((1 - m[:σ_c])*m[:zstar]))
-    Γ0[eq[:eq_inv], endo[:Ez_t]] = -m[:β]*exp((1 - m[:σ_c])*m[:z_star])/(1 + m[:β]*exp((1 - m[:σ_c])*m[:z_star]))
+    Γ0[eq[:eq_inv], endo[:Ez_t]] = -m[:β]*exp((1 - m[:σ_c])*m[:zstar])/(1 + m[:β]*exp((1 - m[:σ_c])*m[:zstar]))
     Γ0[eq[:eq_inv], endo[:μ_t]] = -1.
 
     # Flexible prices and wages
@@ -73,7 +73,7 @@ function eqcond(m::Model805_alt)
     Γ0[eq[:eq_inv_f], endo[:z_t]]    = 1/(1 + m[:β]*exp((1 - m[:σ_c])*m[:zstar]))
     Γ1[eq[:eq_inv_f], endo[:i_f_t]]  = 1/(1 + m[:β]*exp((1 - m[:σ_c])*m[:zstar]))
     Γ0[eq[:eq_inv_f], endo[:Ei_f_t]]  = -m[:β]*exp((1 - m[:σ_c])*m[:zstar])/(1 + m[:β]*exp((1 - m[:σ_c])*m[:zstar]))
-    Γ0[eq[:eq_inv_f], endo[:Ez_t]]   = -m[:β]*exp((1 - m[:σ_c])*m[:z_star])/(1 + m[:β]*exp((1 - m[:σ_c])*m[:z_star]))
+    Γ0[eq[:eq_inv_f], endo[:Ez_t]]   = -m[:β]*exp((1 - m[:σ_c])*m[:zstar])/(1 + m[:β]*exp((1 - m[:σ_c])*m[:zstar]))
     Γ0[eq[:eq_inv_f], endo[:μ_t]]   = -1.
 
 
@@ -219,7 +219,7 @@ function eqcond(m::Model805_alt)
     Γ0[eq[:eq_wage], endo[:z_t]]    = 1/(1 + m[:β]*exp((1 - m[:σ_c])*m[:zstar]))
     Γ1[eq[:eq_wage], endo[:π_t]]    = m[:ι_w]/(1 + m[:β]*exp((1 - m[:σ_c])*m[:zstar]))
     Γ0[eq[:eq_wage], endo[:Ew_t]]   = -m[:β]*exp((1 - m[:σ_c])*m[:zstar])/(1 + m[:β]*exp((1 - m[:σ_c])*m[:zstar]))
-    Γ0[eq[:eq_wage], endo[:Ez_t]]  = -m[:β]*exp((1 - m[:σ_c])*m[:z_star])/(1 + m[:β]*exp((1 - m[:σ_c])*m[:z_star]))
+    Γ0[eq[:eq_wage], endo[:Ez_t]]  = -m[:β]*exp((1 - m[:σ_c])*m[:zstar])/(1 + m[:β]*exp((1 - m[:σ_c])*m[:zstar]))
     Γ0[eq[:eq_wage], endo[:Eπ_t]]   = -m[:β]*exp((1 - m[:σ_c])*m[:zstar])/(1 + m[:β]*exp((1 - m[:σ_c])*m[:zstar]))
     Γ0[eq[:eq_wage], endo[:λ_w_t]]  = -1.
 
@@ -268,7 +268,7 @@ function eqcond(m::Model805_alt)
     # Nominal Deposit rate
     Γ0[eq[:eq_dep], endo[:Rd_t]]   = 1.
     Γ0[eq[:eq_dep], endo[:R_t]]  = -1.
-    Γ0[eq[:eq_dep], endo[:b_t]]   = (m[:σ_c]*(1 + m[:h]*exp(-m[:z_star])))/(1 - m[:h]*exp(-m[:z_star]))
+    Γ0[eq[:eq_dep], endo[:b_t]]   = (m[:σ_c]*(1 + m[:h]*exp(-m[:zstar])))/(1 - m[:h]*exp(-m[:zstar]))
 
 
     ### EXOGENOUS SHOCKS ###
