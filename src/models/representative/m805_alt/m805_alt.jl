@@ -540,8 +540,8 @@ function model_settings!(m::Model805_alt)
     default_settings!(m)
 
     # Anticipated shocks
-    m <= Setting(:n_anticipated_shocks, 6)
-    m <= Setting(:n_anticipated_shocks_padding, 20)
+    m <= Setting(:n_mon_anticipated_shocks, 6)
+    m <= Setting(:n_mon_anticipated_shocks_padding, 20)
 
     # Data
     m <= Setting(:data_id, 4, "Dataset identifier")
@@ -574,10 +574,10 @@ function parameter_groupings(m::Model805_alt)
 
     policy      = [:ψ1, :ψ2, :ψ3, :ρ, :ρ_rm]
 
-    processes   = [[:ρ_g, :ρ_μ, :ρ_z_p, :ρ_z, :ρ_b_p, :ρ_b_til, :ρ_σ_w,
+    processes   = [[:ρ_g, :ρ_μ, :ρ_z_p, :ρ_z, :ρ_b_p, :ρ_b_til,
                   :ρ_π_star,  :ρ_λ_f, :ρ_λ_w, :η_λ_f, :η_λ_w, :η_gz, :σ_g, :σ_μ,
                   :σ_z_p, :σ_z, :σ_b_til, :σ_b_p, :σ_π_star,
-                  :σ_λ_f, :σ_λ_w, :σ_r_m];
+                  :σ_λ_f, :σ_λ_w, :σ_rm];
                   [Symbol("σ_r_m$i") for i in 1:n_anticipated_shocks(m)]]
 
     error       = [:δ_gdpdef, :Γ_gdpdef, :ρ_gdp, :ρ_gdi, :ρ_gdpvar, :ρ_gdpdef, :ρ_corepce,
@@ -594,7 +594,7 @@ function parameter_groupings(m::Model805_alt)
 
     # Ensure no parameters missing
     incl_params = vcat(collect(values(groupings))...)
-    excl_params = [m[θ] for θ in vcat([:Upsilon, :ρ_μ_e, :ρ_γ, :σ_μ_e, :σ_γ, :γ_gdi, :δ_gdi, :me_level],
+    excl_params = [m[θ] for θ in vcat([:Upsilon, :γ_gdi, :δ_gdi, :me_level],
                                       [Symbol("σ_r_m$i") for i=2:20])]
     @assert isempty(setdiff(m.parameters, vcat(incl_params, excl_params)))
 
