@@ -77,7 +77,6 @@ function init_pseudo_observable_mappings!(m::myModel1010depo)
 	pseudo[:tfp].longname      = "Model-implied Fernald's TFP"
 	pseudo[:tfp].rev_transform = quartertoannual
 
-
 	pseudo[:InflationPCE].name          = "PCE inflation"
 	pseudo[:InflationPCE].longname      = "Core PCE Inflation"
 	pseudo[:InflationPCE].rev_transform = loggrowthtopct_annualized

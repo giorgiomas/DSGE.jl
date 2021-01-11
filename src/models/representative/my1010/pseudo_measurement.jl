@@ -120,6 +120,11 @@ function pseudo_measurement(m::myModel1010{T},
 	ZZ_pseudo[pseudo[:GDPdeflator], endo[:π_t]] = m[:Γ_gdpdef]
 	DD_pseudo[pseudo[:GDPdeflator]]             = 100*(m[:π_star]-1) + m[:δ_gdpdef]
 
+	## TFP
+	ZZ_pseudo[pseudo[:tfp], endo[:z_t]]       = (1-m[:α])*m[:Iendoα] + 1*(1-m[:Iendoα])
+	ZZ_pseudo[pseudo[:tfp], endo[:u_t]]       = m[:α]/( (1-m[:α])*(1-m[:Iendoα]) + 1*m[:Iendoα] )
+	ZZ_pseudo[pseudo[:tfp], endo_addl[:u_t1]]  = -(m[:α]/( (1-m[:α])*(1-m[:Iendoα]) + 1*m[:Iendoα]) )
+
 	## 10-year nominal bond yield
 	ZZ_pseudo[pseudo[:LongRate], :] = ZZ_pseudo[pseudo[:NominalFFR], :]' * TTT10
 	DD_pseudo[pseudo[:LongRate]]    = m[:Rstarn]
