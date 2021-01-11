@@ -16,7 +16,7 @@ function init_pseudo_observable_mappings!(m::myModel1010depo)
 	     :Forward10YearRateGap,
 	     :Forward20YearRealRate, :Forward20YearRealNaturalRate,
 	     :Forward30YearRealRate, :Forward30YearRealNaturalRate,
-		 :RealDepositRate, :NominalRate, :NominalDepRate, :gdp, :gdi, :InflationPCE,
+		 :RealDepositRate, :NominalRate, :NominalDepRate, :gdp, :gdi, :tfp, :InflationPCE,
 		 :GDPdeflator, :BBBspread, :AAAspread, :LongRate, :LongRealRate, :LongInflation]
     else
         [:y_t, :y_f_t, :OutputGap,
@@ -31,7 +31,7 @@ function init_pseudo_observable_mappings!(m::myModel1010depo)
          :Forward10YearRealRate, :Forward10YearRealNaturalRate,
          :Forward20YearRealRate, :Forward20YearRealNaturalRate,
          :Forward30YearRealRate, :Forward30YearRealNaturalRate,
-		 :RealDepositRate, :NominalRate, :NominalDepRate, :gdp, :gdi, :InflationPCE,
+		 :RealDepositRate, :NominalRate, :NominalDepRate, :gdp, :gdi, :tfp, :InflationPCE,
 		 :GDPdeflator, :BBBspread, :AAAspread, :LongRate, :LongRealRate, :LongInflation]
     end
 
@@ -72,6 +72,11 @@ function init_pseudo_observable_mappings!(m::myModel1010depo)
 	pseudo[:gdi].name 		   = "GDI growth"
 	pseudo[:gdi].longname	   = "Model-implied GDI Growth"
 	pseudo[:gdi].rev_transform = loggrowthtopct_annualized_percapita
+
+	pseudo[:tfp].name          = "Model-implied TFP"
+	pseudo[:tfp].longname      = "Model-implied Fernald's TFP"
+	pseudo[:tfp].rev_transform = quartertoannual
+
 
 	pseudo[:InflationPCE].name          = "PCE inflation"
 	pseudo[:InflationPCE].longname      = "Core PCE Inflation"
