@@ -159,7 +159,7 @@ module DSGE
         init_parameters!, steadystate!, init_observable_mappings!,
         init_pseudo_observable_mappings!,
         Model990, Model1002, Model1010, Model805, Model904, SmetsWouters, SmetsWoutersOrig, AnSchorfheide,
-        myModel1010, Model1010depo, myModel1010depo, Model1010depo_alt, Model805_alt,
+        myModel1010, Model1010depo, myModel1010depo, Model1010depo_alt, Model805_alt, Model805_alt2,
         PoolModel, eqcond, measurement, pseudo_measurement,
         shock_groupings, transition, DSGEVAR, DSGEVECM,
 
@@ -393,6 +393,13 @@ module DSGE
     include("models/representative/m805_alt/observables.jl")
     include("models/representative/m805_alt/measurement.jl")
     include("models/representative/m805_alt/augment_states.jl")
+
+    include("models/representative/m805_alt2/m805_alt2.jl")
+    include("models/representative/m805_alt2/subspecs.jl")
+    include("models/representative/m805_alt2/eqcond.jl")
+    include("models/representative/m805_alt2/observables.jl")
+    include("models/representative/m805_alt2/measurement.jl")
+    include("models/representative/m805_alt2/augment_states.jl")
 
     include("models/representative/m904/m904.jl")
     include("models/representative/m904/subspecs.jl")
