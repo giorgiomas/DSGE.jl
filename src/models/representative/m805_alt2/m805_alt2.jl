@@ -590,9 +590,9 @@ function parameter_groupings(m::Model805_alt2)
                    :ρ_lr, :ρ_tfp, :σ_gdp, :σ_gdi, :σ_gdpdef, :σ_corepce,
                    :σ_lr, :σ_tfp]
 
-    all_keys     = Vector[steadystate, sticky, policy, processes, error]
+    all_keys     = Vector[steadystate, sticky, financial, policy, processes, error]
     all_params   = map(keys -> [m[θ]::Parameter for θ in keys], all_keys)
-    descriptions = ["Steady State",  "Nominal Rigidities", "Policy",
+    descriptions = ["Steady State", "Financial Frictions", "Nominal Rigidities", "Policy",
                     "Exogenous Processes",
                     "Measurement"]
 
