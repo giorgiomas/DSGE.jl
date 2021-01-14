@@ -278,24 +278,6 @@ function init_observable_mappings!(m::Model805_alt2)
     end
 
 
-    ############################################################################
-    ## 16. Nominal deposit interest rate (3 months)
-    ############################################################################
-
-        nominalrate_fwd_transform = function (levels)
-            # FROM: Nominal effective federal funds rate (aggregate daily data at a
-            #       quarterly frequency at an annual rate)
-            # TO:   Nominal effective fed funds rate, at a quarterly rate
-
-            annualtoquarter(levels[!,:IR3TCD01USQ156N])
-        end
-
-        nominalrate_rev_transform = quartertoannual
-
-        observables[:obs_depositrate] = Observable(:obs_depositrate, [:IR3TCD01USQ156N__FRED],
-                                                   nominalrate_fwd_transform, nominalrate_rev_transform,
-                                                   "Nominal Deposit Rate",
-                                                   "Nominal Interest Rate on 3-month Deposits")
 
    m.observable_mappings = observables
 end

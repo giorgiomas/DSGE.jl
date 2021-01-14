@@ -76,10 +76,6 @@ function measurement(m::Model805_alt2{T},
     ZZ[obs[:obs_nominalrate], endo[:R_t]] = 1.0
     DD[obs[:obs_nominalrate]]             = m[:Rstarn]
 
-    ## Nominal deposit rate
-    ZZ[obs[:obs_depositrate], endo[:Rd_t]] = 1.0
-    DD[obs[:obs_depositrate]]              = m[:Rstarn]
-
     ## Consumption Growth
     ZZ[obs[:obs_consumption], endo[:c_t]]       = 1.0
     ZZ[obs[:obs_consumption], endo_addl[:c_t1]] = -1.0
