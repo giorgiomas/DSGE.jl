@@ -1,5 +1,5 @@
 """```
-measurement(m::myModel1010depo{T}, TTT::Matrix{T}, RRR::Matrix{T},
+measurement(m::myModel1010depo_err{T}, TTT::Matrix{T}, RRR::Matrix{T},
             CCC::Vector{T}) where {T<:AbstractFloat}
 ```
 
@@ -17,7 +17,7 @@ Var(u_t) = EE
 Cov(ϵ_t, u_t) = 0
 ```
 """
-function measurement(m::myModel1010depo{T},
+function measurement(m::myModel1010depo_err{T},
                      TTT::Matrix{T},
                      RRR::Matrix{T},
                      CCC::Vector{T}) where {T<:AbstractFloat}
@@ -78,10 +78,11 @@ function measurement(m::myModel1010depo{T},
     DD[obs[:obs_nominalrate]]             = m[:Rstarn]
 
     ## Nominal deposit rate
-    if get_setting(m, :add_deposits)
+#    if get_setting(m, :add_deposits)
         ZZ[obs[:obs_depositrate], endo[:Rd_t]] = 1.0
+        ZZ[obs[:obs_depositrate], endo_new[:e_deprate_t]] = 1.0
         DD[obs[:obs_depositrate]]              = m[:Rstard]
-    end
+#    end
 
     ## Consumption Growth
     ZZ[obs[:obs_consumption], endo[:c_t]]      = 1.0
@@ -164,6 +165,7 @@ function measurement(m::myModel1010depo{T},
     QQ[exo[:tfp_sh], exo[:tfp_sh]]              = m[:σ_tfp]^2
     QQ[exo[:gdpdef_sh], exo[:gdpdef_sh]]        = m[:σ_gdpdef]^2
     QQ[exo[:corepce_sh], exo[:corepce_sh]]      = m[:σ_corepce]^2
+    QQ[exo[:deprate_sh], exo[:deprate_sh]]      = m[:σ_deprate]^2
     QQ[exo[:gdp_sh], exo[:gdp_sh]]              = m[:σ_gdp]^2
     QQ[exo[:gdi_sh], exo[:gdi_sh]]              = m[:σ_gdi]^2
     QQ[exo[:AAA_sh], exo[:AAA_sh]]              = m[:σ_AAA]^2

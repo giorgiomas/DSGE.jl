@@ -1,11 +1,11 @@
 """
-`init_subspec!(m::Model1010depo_err)`
+`init_subspec!(m::myModel1010depo_err)`
 
 Initializes a model subspecification by overwriting parameters from
 the original model object with new parameter objects. This function is
 called from within the model constructor.
 """
-function init_subspec!(m::Model1010depo_err)
+function init_subspec!(m::myModel1010depo_err)
     if subspec(m) == "ss1"
         return
     elseif subspec(m) == "ss2"
@@ -58,7 +58,7 @@ function init_subspec!(m::Model1010depo_err)
 end
 
 
-function ss2!(m::Model1010depo_err)
+function ss2!(m::myModel1010depo_err)
     # estimate lnb_liq and lnb_safe (constants in liquidity and safety premia)
 
     m <= parameter(:lnb_liq, 0.47, (1e-5, 10.),   (1e-5, 10.), ModelConstructors.Exponential(), GammaAlt(0.47, 0.1),
@@ -73,7 +73,7 @@ function ss2!(m::Model1010depo_err)
                    tex_label="ln(b_{safe})")
 end
 
-function ss3!(m::Model1010depo_err)
+function ss3!(m::myModel1010depo_err)
     # estimate lnb_liq and lnb_safe (constants in liquidity and safety premia),
     # with iid measurement error on the BAA spread measurement error in addition to the AAA.
     # This is equivalent to subspec 2 with estimated σ_BBB.
@@ -97,7 +97,7 @@ function ss3!(m::Model1010depo_err)
 end
 
 
-function ss4!(m::Model1010depo_err)
+function ss4!(m::myModel1010depo_err)
     # ss2, with AR(1) process for AAA spread measurement error
 
     m <= parameter(:ρ_AAA, 0.5, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.1),
@@ -117,7 +117,7 @@ function ss4!(m::Model1010depo_err)
                    tex_label="ln(b_{safe})")
 end
 
-function ss5!(m::Model1010depo_err)
+function ss5!(m::myModel1010depo_err)
 
     # ss4, with AR(1) process for BBB spread measurement error in addition to AAA
 
@@ -148,7 +148,7 @@ function ss5!(m::Model1010depo_err)
                    tex_label="ln(b_{safe})")
 end
 
-function ss6!(m::Model1010depo_err)
+function ss6!(m::myModel1010depo_err)
 
     # ss1, with iid measurement error on BBB spread
 
@@ -158,7 +158,7 @@ function ss6!(m::Model1010depo_err)
                    tex_label="\\sigma_{BBB}")
 end
 
-function ss7!(m::Model1010depo_err)
+function ss7!(m::myModel1010depo_err)
     # ss3, with tight prior on σ_b_liqp and σ_b_safep
 
     m <= parameter(:lnb_liq, 0.47, (1e-5, 10.),   (1e-5, 10.), ModelConstructors.Exponential(), GammaAlt(0.47, 0.1),
@@ -188,7 +188,7 @@ function ss7!(m::Model1010depo_err)
                    tex_label="\\sigma_{b^p, safe}")
 end
 
-function ss8!(m::Model1010depo_err)
+function ss8!(m::myModel1010depo_err)
 
     # Leave lnb_liq, lnb_safe fixed. AR(1) measurement error on both spreads (like ss5).
     m <= parameter(:ρ_AAA, 0.5, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.1),
@@ -207,7 +207,7 @@ function ss8!(m::Model1010depo_err)
                    tex_label="\\sigma_{BBB}")
 end
 
-function ss9!(m::Model1010depo_err)
+function ss9!(m::myModel1010depo_err)
 
     # Leave lnb_liq, lnb_safe fixed. AR(1) measurement error on both spreads (like ss5),
     # with prior variance centered at 0.25.
@@ -233,7 +233,7 @@ function ss9!(m::Model1010depo_err)
                    tex_label="\\sigma_{BBB}")
 end
 
-function ss10!(m::Model1010depo_err)
+function ss10!(m::myModel1010depo_err)
 
     # Leave lnb_liq, lnb_safe fixed. AR(1) measurement error on both spreads (like ss5),
     # with prior variance centered at 0.25.
@@ -270,7 +270,7 @@ function ss10!(m::Model1010depo_err)
                    tex_label="\\sigma_{b^p, safe}")
 end
 
-function ss11!(m::Model1010depo_err)
+function ss11!(m::myModel1010depo_err)
 
     # Leave lnb_liq, lnb_safe fixed. AR(1) measurement error on both spreads (like ss5),
     # with prior variance centered at 0.15.
@@ -307,7 +307,7 @@ function ss11!(m::Model1010depo_err)
                    tex_label="\\sigma_{b^p, safe}")
 end
 
-function ss12!(m::Model1010depo_err)
+function ss12!(m::myModel1010depo_err)
     # ss7 with lnb_safe and lnb_liq fixed and std dev of permanent processes centered at number adjusted for quarterly
 
     m <= parameter(:σ_BBB, 0.1, (1e-8, 5.),(1e-8, 5.),ModelConstructors.Exponential(),RootInverseGamma(2., 0.10),
@@ -327,7 +327,7 @@ function ss12!(m::Model1010depo_err)
                    tex_label="\\sigma_{b^p, safe}")
 end
 
-function ss13!(m::Model1010depo_err)
+function ss13!(m::myModel1010depo_err)
     # ss12 with AR(1) on measurement error
 
     m <= parameter(:ρ_AAA, 0.5, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.1),
@@ -356,7 +356,7 @@ function ss13!(m::Model1010depo_err)
                    tex_label="\\sigma_{b^p, safe}")
 end
 
-function ss14!(m::Model1010depo_err)
+function ss14!(m::myModel1010depo_err)
     # ss13, but shutting down permanent components of b shocks
 
     m <= parameter(:ρ_AAA, 0.5, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.1),
@@ -386,7 +386,7 @@ function ss14!(m::Model1010depo_err)
 end
 
 
-function ss15!(m::Model1010depo_err)
+function ss15!(m::myModel1010depo_err)
     # ss5, with fixed lnb_safe and lnb_liq
 
     m <= parameter(:ρ_AAA, 0.5, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.1),
@@ -405,7 +405,7 @@ function ss15!(m::Model1010depo_err)
                    tex_label="\\sigma_{BBB}")
 end
 
-function ss16!(m::Model1010depo_err)
+function ss16!(m::myModel1010depo_err)
     # ss13, but not adjusting for maturities in the measurement equation
 
     m <= parameter(:ρ_AAA, 0.5, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.1),
@@ -434,7 +434,7 @@ function ss16!(m::Model1010depo_err)
                    tex_label="\\sigma_{b^p, safe}")
 end
 
-function ss17!(m::Model1010depo_err)
+function ss17!(m::myModel1010depo_err)
     # ss13 with :σ_b_safep fixed at 0
 
     m <= parameter(:ρ_AAA, 0.5, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.1),
@@ -463,7 +463,7 @@ function ss17!(m::Model1010depo_err)
                    tex_label="\\sigma_{b^p, safe}")
 end
 
-function ss18!(m::Model1010depo_err)
+function ss18!(m::myModel1010depo_err)
     # ss13 with ρ_z_p fixed at 0.99
 
     m <= parameter(:ρ_AAA, 0.5, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.1),
@@ -496,7 +496,7 @@ function ss18!(m::Model1010depo_err)
 end
 
 
-function ss19!(m::Model1010depo_err)
+function ss19!(m::myModel1010depo_err)
     # ss19 with a tight prior on σ_z_p
 
     m <= parameter(:ρ_AAA, 0.5, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.1),
@@ -538,12 +538,12 @@ function ss19!(m::Model1010depo_err)
                    tex_label="\\sigma_{z^p}")
 end
 
-function ss20!(m::Model1010depo_err)
+function ss20!(m::myModel1010depo_err)
     # ss18 with betabar defined (correctly) with σ_c instead of σ_ω_star
     ss18!(m)
 end
 
-function ss21!(m::Model1010depo_err)
+function ss21!(m::myModel1010depo_err)
     ss13!(m)
 
     # standard deviations of the anticipated policy shocks
@@ -555,12 +555,12 @@ function ss21!(m::Model1010depo_err)
 
 end
 
-function ss22!(m::Model1010depo_err)
+function ss22!(m::myModel1010depo_err)
     # ss20 but with inflation, long run inflation, etc. as pseudo-observables
     ss20!(m)
 end
 
-function ss23!(m::Model1010depo_err)
+function ss23!(m::myModel1010depo_err)
     # ss20 + looser prior on the deposit rate measurement error (same prior on the long rate m.e.)
 
     m <= parameter(:ρ_AAA, 0.5, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.1),

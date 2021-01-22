@@ -1,9 +1,9 @@
 """
 ```
-myModel1010depo{T} <: AbstractRepModel{T}
+Model1010depo_1spread{T} <: AbstractRepModel{T}
 ```
 
-The `myModel1010depo` type defines the structure of myModel1010depo.
+The `Model1010depo_1spread` type defines the structure of Model1010depo_1spread.
 
 ### Fields
 
@@ -79,7 +79,7 @@ equilibrium conditions.
   dictionary that stores names and transformations to/from model units. See
   `PseudoObservable` for further details.
 """
-mutable struct myModel1010depo{T} <: AbstractRepModel{T}
+mutable struct Model1010depo_1spread{T} <: AbstractRepModel{T}
     parameters::ParameterVector{T}                         # vector of all time-invariant model parameters
     steady_state::ParameterVector{T}                       # model steady-state values
     keys::OrderedDict{Symbol,Int}                          # human-readable names for all the model
@@ -104,37 +104,35 @@ mutable struct myModel1010depo{T} <: AbstractRepModel{T}
     pseudo_observable_mappings::OrderedDict{Symbol, PseudoObservable}
 end
 
-description(m::myModel1010depo) = "New York Fed DSGE Model m1010, $(m.subspec). Model1009, with trend and stationary components in the safety and liquidity premia processes."
+description(m::Model1010depo_1spread) = "New York Fed DSGE Model m1010, $(m.subspec). Model1009, with trend and stationary components in the safety and liquidity premia processes."
 
 """
-`init_model_indices!(m::myModel1010depo)`
+`init_model_indices!(m::Model1010depo_1spread)`
 
 Arguments:
-`m:: myModel1010depo`: a model object
+`m:: Model1010depo_1spread`: a model object
 
 Description:
 Initializes indices for all of `m`'s states, shocks, and equilibrium conditions.
 """
-function init_model_indices!(m::myModel1010depo)
+function init_model_indices!(m::Model1010depo_1spread)
     # Endogenous states
     endogenous_states = [[
         :y_t, :c_t, :i_t, :qk_t, :k_t, :kbar_t, :u_t, :rk_t, :Rktil_t, :n_t,
-        :mc_t, :π_t, :μ_ω_t, :w_t, :L_t, :R_t, :g_t, :b_liq_t, :b_safe_t, :μ_t,
+        :mc_t, :π_t, :μ_ω_t, :w_t, :L_t, :R_t, :g_t, :b_t, :μ_t,
         :z_t, :λ_f_t, :λ_f_t1, :λ_w_t, :λ_w_t1, :rm_t, :σ_ω_t, :μ_e_t, :γ_t,
         :π_star_t, :Ec_t, :Eqk_t, :Ei_t, :Eπ_t, :EL_t, :Erk_t, :Ew_t,
         :ERtil_k_t, :ERktil_f_t, :y_f_t, :c_f_t, :i_f_t, :qk_f_t, :k_f_t,
         :kbar_f_t, :u_f_t, :rk_f_t, :w_f_t, :L_f_t, :r_f_t, :Ec_f_t, :Eqk_f_t,
         :Ei_f_t, :EL_f_t, :ztil_t, :π_t1, :π_t2, :π_a_t, :R_t1, :zp_t, :Ez_t,
-        :rktil_f_t, :n_f_t, :b_liqtil_t, :b_liqp_t, :b_safetil_t, :b_safep_t,
-        :spr_t, :spr_f_t, :lev_t, :cy_t, :rr_t, :cre_t, :Rd_t];
+        :rktil_f_t, :n_f_t, :b_til_t, :b_p_t, :Rd_t];
         [Symbol("rm_tl$i") for i = 1:n_anticipated_shocks(m)]]
 
     # Exogenous shocks
     exogenous_shocks = [[
-        :g_sh, :b_liqtil_sh, :b_liqp_sh, :b_safetil_sh, :b_safep_sh, :μ_sh,
+        :g_sh, :b_til_sh, :b_p_sh, :μ_sh,
         :z_sh, :λ_f_sh, :λ_w_sh, :rm_sh, :σ_ω_sh, :μ_e_sh, :γ_sh, :π_star_sh,
-        :lr_sh, :zp_sh, :tfp_sh, :gdpdef_sh, :corepce_sh, :gdp_sh, :gdi_sh,
-        :BBB_sh, :AAA_sh];
+        :lr_sh, :zp_sh, :tfp_sh, :gdpdef_sh, :corepce_sh, :gdp_sh, :gdi_sh, :BBB_sh];
         [Symbol("rm_shl$i") for i = 1:n_anticipated_shocks(m)]]
 
     # Expectations shocks
@@ -146,23 +144,22 @@ function init_model_indices!(m::myModel1010depo)
     equilibrium_conditions = [[
         :eq_euler, :eq_inv, :eq_capval, :eq_spread, :eq_nevol, :eq_output,
         :eq_caputl, :eq_capsrv, :eq_capev, :eq_mkupp, :eq_phlps, :eq_caprnt,
-        :eq_msub, :eq_wage, :eq_mp, :eq_res, :eq_g, :eq_b_liq, :eq_b_safe,
+        :eq_msub, :eq_wage, :eq_mp, :eq_res, :eq_g, :eq_b,
         :eq_μ, :eq_z, :eq_λ_f, :eq_λ_w, :eq_rm, :eq_σ_ω, :eq_μ_e, :eq_γ,
         :eq_λ_f1, :eq_λ_w1, :eq_Ec, :eq_Eqk, :eq_Ei, :eq_Eπ, :eq_EL, :eq_Erk,
         :eq_Ew, :eq_ERktil, :eq_euler_f, :eq_inv_f, :eq_capval_f, :eq_output_f,
         :eq_caputl_f, :eq_capsrv_f, :eq_capev_f, :eq_mkupp_f, :eq_caprnt_f,
         :eq_msub_f, :eq_res_f, :eq_Ec_f, :eq_Eqk_f, :eq_Ei_f, :eq_EL_f,
         :eq_ztil, :eq_π_star, :eq_π1, :eq_π2, :eq_π_a, :eq_Rt1, :eq_zp, :eq_Ez,
-        :eq_spread_f,:eq_nevol_f, :eq_Erktil_f, :eq_b_liqtil, :eq_b_liqp,
-        :eq_b_safetil, :eq_b_safep, :eq_spr, :eq_spr_f, :eq_lev, :eq_cy,
-        :eq_realr, :eq_cre, :eq_dep];
+        :eq_spread_f,:eq_nevol_f, :eq_Erktil_f,
+        :eq_b_til, :eq_b_p, :eq_dep];
         [Symbol("eq_rml$i") for i=1:n_anticipated_shocks(m)]]
 
     # Additional states added after solving model
     # Lagged states and observables measurement error
     endogenous_states_augmented = [
         :y_t1, :c_t1, :i_t1, :w_t1, :π_t1_dup, :L_t1, :u_t1, :Et_π_t, :lr_t, :tfp_t, :e_gdpdef_t,
-        :e_corepce_t, :e_gdp_t, :e_gdi_t, :e_gdp_t1, :e_gdi_t1, :e_BBB_t, :e_AAA_t]
+        :e_corepce_t, :e_gdp_t, :e_gdi_t, :e_gdp_t1, :e_gdi_t1, :e_BBB_t]
 
     # Observables
     observables = keys(m.observable_mappings)
@@ -180,7 +177,7 @@ function init_model_indices!(m::myModel1010depo)
     for (i,k) in enumerate(pseudo_observables);          m.pseudo_observables[k]          = i end
 end
 
-function myModel1010depo(subspec::String="ss20";
+function Model1010depo_1spread(subspec::String="ss20";
                    custom_settings::Dict{Symbol, Setting} = Dict{Symbol, Setting}(),
                    testing = false)
 
@@ -192,7 +189,7 @@ function myModel1010depo(subspec::String="ss20";
     rng                = MersenneTwister(0)
 
     # Initialize empty model
-    m = myModel1010depo{Float64}(
+    m = Model1010depo_1spread{Float64}(
             # model parameters and steady state values
             Vector{AbstractParameter{Float64}}(), Vector{Float64}(), OrderedDict{Symbol,Int}(),
 
@@ -231,14 +228,14 @@ end
 
 """
 ```
-init_parameters!(m::myModel1010depo)
+init_parameters!(m::Model1010depo_1spread)
 ```
 
 Initializes the model's parameters, as well as empty values for the steady-state
 parameters (in preparation for `steadystate!(m)` being called to initialize
 those).
 """
-function init_parameters!(m::myModel1010depo)
+function init_parameters!(m::Model1010depo_1spread)
     m <= parameter(:α, 0.1596, (1e-5, 0.999), (1e-5, 0.999), ModelConstructors.SquareRoot(), Normal(0.30, 0.05), fixed=false,
                    description="α: Capital elasticity in the intermediate goods sector's production function (also known as the capital share).",
                    tex_label="\\alpha")
@@ -338,16 +335,13 @@ function init_parameters!(m::myModel1010depo)
                    description="spr_*: Steady-state level of spread.",
                    tex_label="SP_*")
 
-    m <= parameter(:lnb_liq, 0.47/4, (1e-5, 10.), (1e-5, 10.), ModelConstructors.Exponential(), GammaAlt(0.47/4, 0.05), fixed=true, scaling = x -> (1 + x/100),
-                   description="ln(b_liq): Liquidity premium.",
-                   tex_label="ln(b_{liq})")
+                   m <= parameter(:lnb_liq, 0.47/4, (1e-5, 10.), (1e-5, 10.), ModelConstructors.Exponential(), GammaAlt(0.47/4, 0.05), fixed=true, scaling = x -> (1 + x/100),
+                                  description="ln(b_liq): Liquidity premium.",
+                                  tex_label="ln(b_{liq})")
 
-    m <= parameter(:lnb_safe, 0.26/4, (1e-5, 10.), (1e-5, 10.), ModelConstructors.Exponential(), GammaAlt(0.26/4, 0.05), fixed=true, scaling = x -> (1 + x/100),
-                   description="ln(b_safe_*): Safety premium.",
-                   tex_label="ln(b_{safe})")
-
-    m <= parameter(:λ_AAA, 0.0, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5,0.2), fixed=true,
-                   tex_label="\\lambda_{AAA}")
+                   m <= parameter(:lnb_safe, 0.26/4, (1e-5, 10.), (1e-5, 10.), ModelConstructors.Exponential(), GammaAlt(0.26/4, 0.05), fixed=true, scaling = x -> (1 + x/100),
+                                  description="ln(b_safe_*): Safety premium.",
+                                  tex_label="ln(b_{safe})")
 
     m <= parameter(:ζ_spb, 0.0559, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.05, 0.005), fixed=false,
                    description="ζ_spb: The elasticity of the expected exess return on capital (or 'spread') with respect to leverage.",
@@ -375,21 +369,13 @@ function init_parameters!(m::myModel1010depo)
                    description="ρ_g: AR(1) coefficient in the government spending process.",
                    tex_label="\\rho_g")
 
-    m <= parameter(:ρ_b_liqtil, 0.9410, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.2), fixed=false,
-                   description="ρ_b_liqtil: AR(1) coefficient in the non-permanent component of the intertemporal preference shifter process for liquid assets.",
-                   tex_label="\\rho_{\\tilde{b},liq}")
+    m <= parameter(:ρ_b_til, 0.9410, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.2), fixed=false,
+                   description="ρ_b_til: AR(1) coefficient in the non-permanent component of the intertemporal preference shifter process for safe/liquid assets.",
+                   tex_label="\\rho_{\\tilde{b}}")
 
-    m <= parameter(:ρ_b_liqp, 0.99, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.2), fixed=true,
-                   description="ρ_b_liqp: AR(1) coefficient in the permanent component of the intertemporal preference shifter process for liquid assets.",
-                   tex_label="\\rho_{b^p,liq}")
-
-    m <= parameter(:ρ_b_safetil, 0.9410, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.2), fixed=false,
-                   description="ρ_b_safetil: AR(1) coefficient in the non-permanent component of the intertemporal preference shifter process for safe assets.",
-                   tex_label="\\rho_{\\tilde{b},safe}")
-
-    m <= parameter(:ρ_b_safep, 0.99, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.2), fixed=true,
-                   description="ρ_b_safep: AR(1) coefficient in the permanent component of the intertemporal preference shifter process for safe assets.",
-                   tex_label="\\rho_{b^p,safe}")
+    m <= parameter(:ρ_b_p, 0.99, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.2), fixed=true,
+                   description="ρ_b_p: AR(1) coefficient in the permanent component of the intertemporal preference shifter process for safe/liquid assets.",
+                   tex_label="\\rho_{b^p}")
 
     m <= parameter(:ρ_μ, 0.8735, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.2), fixed=false,
                    description="ρ_μ: AR(1) coefficient in capital adjustment cost process.",
@@ -453,13 +439,9 @@ function init_parameters!(m::myModel1010depo)
     m <= parameter(:ρ_gdpvar, 0., (-0.999, 0.999), (-0.999, 0.999), ModelConstructors.SquareRoot(), Normal(0.0, 0.4), fixed=false,
                    tex_label="\\varrho_{gdp}")
 
-    m <= parameter(:ρ_BBB, 0., fixed=true,
-                   description="ρ_BBB: AR(1) coefficient in the BBB spread process.",
-                   tex_label="\\rho_{BBB}")
-
-    m <= parameter(:ρ_AAA, 0., fixed=true,
-                   description="ρ_AAA: AR(1) coefficient in the AAA spread process.",
-                   tex_label="\\rho_{AAA}")
+                   m <= parameter(:ρ_BBB, 0., fixed=true,
+                                  description="ρ_BBB: AR(1) coefficient in the BBB spread process.",
+                                  tex_label="\\rho_{BBB}")
 
     m <= parameter(:me_level, 1., (-0.999, 0.999), (-0.999, 0.999), ModelConstructors.Untransformed(), Normal(0.0, 0.4), fixed=true,
                    description="me_level: Indicator of cointegration of GDP and GDI.",
@@ -470,21 +452,14 @@ function init_parameters!(m::myModel1010depo)
                    description="σ_g: The standard deviation of the government spending process.",
                    tex_label="\\sigma_{g}")
 
-    m <= parameter(:σ_b_liqtil, 0.0292, (1e-8, 5.), (1e-8, 5.), ModelConstructors.Exponential(), RootInverseGamma(2, 0.10), fixed=false,
-                   description="σ_b_liqtil: Standard deviation of non-stationary component of liquid asset preference shifter process.",
-                   tex_label="\\sigma_{\\tilde{b}, liq}")
+    m <= parameter(:σ_b_til, 0.0292, (1e-8, 5.), (1e-8, 5.), ModelConstructors.Exponential(), RootInverseGamma(2, 0.10), fixed=false,
+                   description="σ_b_til: Standard deviation of stationary component of asset preference shifter process.",
+                   tex_label="\\sigma_{\\tilde{b}}")
 
-    m <= parameter(:σ_b_liqp, 0.0269, (1e-8, 5.), (1e-8, 5.), ModelConstructors.Exponential(), RootInverseGamma(6, 0.03), fixed=false,
-                   description="σ_b_liqp: Standard deviation of stationary component of liquid asset preference shifter process.",
-                   tex_label="\\sigma_{b^p, liq}")
+    m <= parameter(:σ_b_p, 0.0269, (1e-8, 5.), (1e-8, 5.), ModelConstructors.Exponential(), RootInverseGamma(6, 0.03), fixed=false,
+                   description="σ_b_p: Standard deviation of non-stationary component of asset preference shifter process.",
+                   tex_label="\\sigma_{b^p}")
 
-    m <= parameter(:σ_b_safetil, 0.0292, (1e-8, 5.), (1e-8, 5.), ModelConstructors.Exponential(), RootInverseGamma(2, 0.10), fixed=false,
-                   description="σ_b_safetil: Standard deviation of non-stationary component of safe asset preference shifter process.",
-                   tex_label="\\sigma_{\\tilde{b}, safe}")
-
-    m <= parameter(:σ_b_safep, 0.0269, (1e-8, 5.), (1e-8, 5.), ModelConstructors.Exponential(), RootInverseGamma(6, 0.03), fixed=false,
-                   description="σ_b_safep: Standard deviation of stationary component of safe asset preference shifter process.",
-                   tex_label="\\sigma_{b^p, safe}")
 
     m <= parameter(:σ_μ, 0.4559, (1e-8, 5.), (1e-8, 5.), ModelConstructors.Exponential(), RootInverseGamma(2, 0.10), fixed=false,
                    description="σ_μ: The standard deviation of the exogenous marginal efficiency of investment shock process.",
@@ -543,13 +518,9 @@ function init_parameters!(m::myModel1010depo)
     m <= parameter(:σ_gdi, 0.1, (1e-8, 5.),(1e-8, 5.),ModelConstructors.Exponential(),RootInverseGamma(2, 0.10), fixed=false,
                    tex_label="\\sigma_{gdi}")
 
-    m <= parameter(:σ_BBB, 0.0, (1e-8, 5.),(1e-8, 5.),ModelConstructors.Exponential(),RootInverseGamma(2, 0.10), fixed=true,
-                   description="σ_BBB: Standard deviation on the AR(1) process for measurement error on the BBB spread.",
-                   tex_label="\\sigma_{BBB}")
-
-    m <= parameter(:σ_AAA, 0.1, (1e-8, 5.),(1e-8, 5.),ModelConstructors.Exponential(),RootInverseGamma(2, 0.10), fixed=false,
-                   description="σ_AAA: Standard deviation on the AR(1) process for measurement error on the AAA spread.",
-                   tex_label="\\sigma_{AAA}")
+                   m <= parameter(:σ_BBB, 0.0, (1e-8, 5.),(1e-8, 5.),ModelConstructors.Exponential(),RootInverseGamma(2, 0.10), fixed=true,
+                                  description="σ_BBB: Standard deviation on the AR(1) process for measurement error on the BBB spread.",
+                                  tex_label="\\sigma_{BBB}")
 
     # standard deviations of the anticipated policy shocks
     for i = 1:n_anticipated_shocks_padding(m)
@@ -621,13 +592,13 @@ end
 
 """
 ```
-steadystate!(m::myModel1010depo)
+steadystate!(m::Model1010depo_1spread)
 ```
 
 Calculates the model's steady-state values. `steadystate!(m)` must be called whenever
 the parameters of `m` are updated.
 """
-function steadystate!(m::myModel1010depo)
+function steadystate!(m::Model1010depo_1spread)
     SIGWSTAR_ZERO = 0.5
 
     m[:z_star]   = log(1+m[:γ]) + m[:α]/(1-m[:α])*log(m[:Upsilon])
@@ -734,13 +705,9 @@ function steadystate!(m::myModel1010depo)
     return m
 end
 
-function model_settings!(m::myModel1010depo)
+function model_settings!(m::Model1010depo_1spread)
 
     default_settings!(m)
-
-    # Deposits' rate as observable   <---------------------------------------------------------
-    m <= Setting(:add_deposits, true,
-		         "Whether to add data on deposits' interest rate")
 
     # Anticipated shocks
     m <= Setting(:n_mon_anticipated_shocks, 6,
@@ -750,9 +717,9 @@ function model_settings!(m::myModel1010depo)
 
     # Data
     m <= Setting(:data_id, 4, "Dataset identifier")
-    m <= Setting(:cond_full_names, [:obs_gdp, :obs_corepce, :obs_BBBspread, :obs_AAAspread, :obs_nominalrate, :obs_longrate],
+    m <= Setting(:cond_full_names, [:obs_gdp, :obs_corepce, :obs_nominalrate, :obs_longrate],
                  "Observables used in conditional forecasts")
-    m <= Setting(:cond_semi_names, [:obs_BBBspread, :obs_AAAspread, :obs_nominalrate, :obs_longrate],
+    m <= Setting(:cond_semi_names, [:obs_nominalrate, :obs_longrate],
                  "Observables used in semiconditional forecasts")
 
     # Forecast
@@ -766,7 +733,7 @@ end
 
 """
 ```
-parameter_groupings(m::myModel1010depo)
+parameter_groupings(m::Model1010depo_1spread)
 ```
 
 Returns an `OrderedDict{String, Vector{Parameter}}` mapping descriptions of
@@ -774,7 +741,7 @@ parameter groupings (e.g. \"Policy Parameters\") to vectors of
 `Parameter`s. This dictionary is passed in as a keyword argument to
 `prior_table`.
 """
-function parameter_groupings(m::myModel1010depo)
+function parameter_groupings(m::Model1010depo_1spread)
     steadystate = [:γ, :α, :β, :σ_c, :h, :ν_l, :δ, :Φ, :S′′, :ppsi,
                    :δ_gdpdef, :Lmean, :λ_w, :π_star, :g_star]
 
@@ -782,17 +749,17 @@ function parameter_groupings(m::myModel1010depo)
 
     policy      = [:ψ1, :ψ2, :ψ3, :ρ, :ρ_rm]
 
-    financial   = [:Fω, :spr, :ζ_spb, :γ_star, :lnb_safe, :lnb_liq, :λ_AAA]
+    financial   = [:Fω, :spr, :ζ_spb, :γ_star, :lnb_safe, :lnb_liq]
 
-    processes   = [[:ρ_g, :ρ_μ, :ρ_z_p, :ρ_z, :ρ_b_liqp, :ρ_b_liqtil, :ρ_b_safep, :ρ_b_safetil, :ρ_σ_w,
+    processes   = [[:ρ_g, :ρ_μ, :ρ_z_p, :ρ_z, :ρ_b_p, :ρ_b_til, :ρ_σ_w,
                   :ρ_π_star,  :ρ_λ_f, :ρ_λ_w, :η_λ_f, :η_λ_w, :η_gz, :σ_g, :σ_μ,
-                  :σ_z_p, :σ_z, :σ_b_liqp, :σ_b_liqtil, :σ_b_safep, :σ_b_safetil, :σ_σ_ω, :σ_π_star,
+                  :σ_z_p, :σ_z, :σ_b_til, :σ_b_p, :σ_σ_ω, :σ_π_star,
                   :σ_λ_f, :σ_λ_w, :σ_r_m];
                   [Symbol("σ_r_m$i") for i in 1:n_anticipated_shocks(m)]]
 
-    error       = [:δ_gdpdef, :Γ_gdpdef, :ρ_gdp, :ρ_gdi, :ρ_gdpvar, :ρ_gdpdef, :ρ_corepce, :ρ_AAA,
-                   :ρ_BBB, :ρ_lr, :ρ_tfp, :σ_gdp, :σ_gdi, :σ_gdpdef, :σ_corepce, :σ_AAA, :σ_BBB,
-                   :σ_lr, :σ_tfp]
+    error       = [:δ_gdpdef, :Γ_gdpdef, :ρ_gdp, :ρ_gdi, :ρ_gdpvar, :ρ_gdpdef, :ρ_corepce,
+                   :ρ_lr, :ρ_tfp, :ρ_BBB, :σ_gdp, :σ_gdi, :σ_gdpdef, :σ_corepce,
+                   :σ_lr, :σ_tfp, :σ_BBB]
 
     all_keys     = Vector[steadystate, sticky, policy, financial, processes, error]
     all_params   = map(keys -> [m[θ]::Parameter for θ in keys], all_keys)
@@ -813,16 +780,16 @@ end
 
 """
 ```
-shock_groupings(m::myModel1010depo)
+shock_groupings(m::Model1010depo_1spread)
 ```
 
 Returns a `Vector{ShockGroup}`, which must be passed in to
 `plot_shock_decomposition`. See `?ShockGroup` for details.
 """
-function shock_groupings(m::myModel1010depo)
+function shock_groupings(m::Model1010depo_1spread)
     gov      = ShockGroup("g", [:g_sh], RGB(0.70, 0.13, 0.13)) # firebrick
-    bet_liq  = ShockGroup("b_liq", [:b_liqtil_sh, :b_liqp_sh], RGB(0.3, 0.3, 1.0))
-    bet_safe = ShockGroup("b_safe", [:b_safetil_sh, :b_safep_sh], RGB(0.1, 0.6, 1.0))
+    bet_trans= ShockGroup("b_trans", [:b_til_sh], RGB(0.3, 0.3, 1.0))
+    bet_perm = ShockGroup("b_perm", [:b_p_sh], RGB(0.1, 0.6, 1.0))
     fin      = ShockGroup("FF", [:γ_sh, :μ_e_sh, :σ_ω_sh], RGB(0.29, 0.0, 0.51)) # indigo
     tfp      = ShockGroup("z", [:z_sh], RGB(1.0, 0.55, 0.0)) # darkorange
     pmu      = ShockGroup("p-mkp", [:λ_f_sh], RGB(0.60, 0.80, 0.20)) # yellowgreen
@@ -836,5 +803,5 @@ function shock_groupings(m::myModel1010depo)
     zpe      = ShockGroup("zp", [:zp_sh], RGB(0.0, 0.3, 0.0))
     det      = ShockGroup("dt", [:dettrend], :gray40)
 
-    return [gov, bet_liq, bet_safe, fin, tfp, pmu, wmu, pol, pis, mei, mea, zpe, det]
+    return [gov, bet_trans, bet_perm, fin, tfp, pmu, wmu, pol, pis, mei, mea, zpe, det]
 end

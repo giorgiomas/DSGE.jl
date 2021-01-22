@@ -159,7 +159,8 @@ module DSGE
         init_parameters!, steadystate!, init_observable_mappings!,
         init_pseudo_observable_mappings!,
         Model990, Model1002, Model1010, Model805, Model904, SmetsWouters, SmetsWoutersOrig, AnSchorfheide,
-        myModel1010, Model1010depo, myModel1010depo, Model1010depo_alt, Model805_alt, Model805_alt2, Model1010depo_err,
+        myModel1010, Model1010depo, myModel1010depo, Model1010depo_alt, Model805_alt, Model805_alt2,
+        Model1010depo_err, myModel1010depo_err, Model1010depo_1spread, Model1010_1spread,
         PoolModel, eqcond, measurement, pseudo_measurement,
         shock_groupings, transition, DSGEVAR, DSGEVECM,
 
@@ -380,6 +381,24 @@ module DSGE
     include("models/representative/m1010depo_alt/pseudo_measurement.jl")
     include("models/representative/m1010depo_alt/augment_states.jl")
 
+    include("models/representative/m1010depo_1spread/m1010depo_1spread.jl")
+    include("models/representative/m1010depo_1spread/subspecs.jl")
+    include("models/representative/m1010depo_1spread/eqcond.jl")
+    include("models/representative/m1010depo_1spread/observables.jl")
+    include("models/representative/m1010depo_1spread/measurement.jl")
+    include("models/representative/m1010depo_1spread/pseudo_observables.jl")
+    include("models/representative/m1010depo_1spread/pseudo_measurement.jl")
+    include("models/representative/m1010depo_1spread/augment_states.jl")
+
+    include("models/representative/m1010_1spread/m1010_1spread.jl")
+    include("models/representative/m1010_1spread/subspecs.jl")
+    include("models/representative/m1010_1spread/eqcond.jl")
+    include("models/representative/m1010_1spread/observables.jl")
+    include("models/representative/m1010_1spread/measurement.jl")
+    include("models/representative/m1010_1spread/pseudo_observables.jl")
+    include("models/representative/m1010_1spread/pseudo_measurement.jl")
+    include("models/representative/m1010_1spread/augment_states.jl")
+
     include("models/representative/m1010depo_err/m1010depo_err.jl")
     include("models/representative/m1010depo_err/subspecs.jl")
     include("models/representative/m1010depo_err/eqcond.jl")
@@ -388,6 +407,15 @@ module DSGE
     include("models/representative/m1010depo_err/pseudo_observables.jl")
     include("models/representative/m1010depo_err/pseudo_measurement.jl")
     include("models/representative/m1010depo_err/augment_states.jl")
+
+    include("models/representative/my1010depo_err/my1010depo_err.jl")
+    include("models/representative/my1010depo_err/subspecs.jl")
+    include("models/representative/my1010depo_err/eqcond.jl")
+    include("models/representative/my1010depo_err/observables.jl")
+    include("models/representative/my1010depo_err/measurement.jl")
+    include("models/representative/my1010depo_err/pseudo_observables.jl")
+    include("models/representative/my1010depo_err/pseudo_measurement.jl")
+    include("models/representative/my1010depo_err/augment_states.jl")
 
     include("models/representative/m805/m805.jl")
     include("models/representative/m805/subspecs.jl")

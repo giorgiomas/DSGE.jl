@@ -1,9 +1,9 @@
 """
 ```
-myModel1010depo{T} <: AbstractRepModel{T}
+myModel1010depo_err{T} <: AbstractRepModel{T}
 ```
 
-The `myModel1010depo` type defines the structure of myModel1010depo.
+The `myModel1010depo_err` type defines the structure of myModel1010depo_err.
 
 ### Fields
 
@@ -79,7 +79,7 @@ equilibrium conditions.
   dictionary that stores names and transformations to/from model units. See
   `PseudoObservable` for further details.
 """
-mutable struct myModel1010depo{T} <: AbstractRepModel{T}
+mutable struct myModel1010depo_err{T} <: AbstractRepModel{T}
     parameters::ParameterVector{T}                         # vector of all time-invariant model parameters
     steady_state::ParameterVector{T}                       # model steady-state values
     keys::OrderedDict{Symbol,Int}                          # human-readable names for all the model
@@ -104,18 +104,18 @@ mutable struct myModel1010depo{T} <: AbstractRepModel{T}
     pseudo_observable_mappings::OrderedDict{Symbol, PseudoObservable}
 end
 
-description(m::myModel1010depo) = "New York Fed DSGE Model m1010, $(m.subspec). Model1009, with trend and stationary components in the safety and liquidity premia processes."
+description(m::myModel1010depo_err) = "New York Fed DSGE Model m1010, $(m.subspec). Model1009, with trend and stationary components in the safety and liquidity premia processes."
 
 """
-`init_model_indices!(m::myModel1010depo)`
+`init_model_indices!(m::myModel1010depo_err)`
 
 Arguments:
-`m:: myModel1010depo`: a model object
+`m:: myModel1010depo_err`: a model object
 
 Description:
 Initializes indices for all of `m`'s states, shocks, and equilibrium conditions.
 """
-function init_model_indices!(m::myModel1010depo)
+function init_model_indices!(m::myModel1010depo_err)
     # Endogenous states
     endogenous_states = [[
         :y_t, :c_t, :i_t, :qk_t, :k_t, :kbar_t, :u_t, :rk_t, :Rktil_t, :n_t,
@@ -134,7 +134,7 @@ function init_model_indices!(m::myModel1010depo)
         :g_sh, :b_liqtil_sh, :b_liqp_sh, :b_safetil_sh, :b_safep_sh, :μ_sh,
         :z_sh, :λ_f_sh, :λ_w_sh, :rm_sh, :σ_ω_sh, :μ_e_sh, :γ_sh, :π_star_sh,
         :lr_sh, :zp_sh, :tfp_sh, :gdpdef_sh, :corepce_sh, :gdp_sh, :gdi_sh,
-        :BBB_sh, :AAA_sh];
+        :BBB_sh, :AAA_sh, :deprate_sh];
         [Symbol("rm_shl$i") for i = 1:n_anticipated_shocks(m)]]
 
     # Expectations shocks
@@ -162,7 +162,7 @@ function init_model_indices!(m::myModel1010depo)
     # Lagged states and observables measurement error
     endogenous_states_augmented = [
         :y_t1, :c_t1, :i_t1, :w_t1, :π_t1_dup, :L_t1, :u_t1, :Et_π_t, :lr_t, :tfp_t, :e_gdpdef_t,
-        :e_corepce_t, :e_gdp_t, :e_gdi_t, :e_gdp_t1, :e_gdi_t1, :e_BBB_t, :e_AAA_t]
+        :e_corepce_t, :e_gdp_t, :e_gdi_t, :e_gdp_t1, :e_gdi_t1, :e_BBB_t, :e_AAA_t, :e_deprate_t]
 
     # Observables
     observables = keys(m.observable_mappings)
@@ -180,7 +180,7 @@ function init_model_indices!(m::myModel1010depo)
     for (i,k) in enumerate(pseudo_observables);          m.pseudo_observables[k]          = i end
 end
 
-function myModel1010depo(subspec::String="ss20";
+function myModel1010depo_err(subspec::String="ss20";
                    custom_settings::Dict{Symbol, Setting} = Dict{Symbol, Setting}(),
                    testing = false)
 
@@ -192,7 +192,7 @@ function myModel1010depo(subspec::String="ss20";
     rng                = MersenneTwister(0)
 
     # Initialize empty model
-    m = myModel1010depo{Float64}(
+    m = myModel1010depo_err{Float64}(
             # model parameters and steady state values
             Vector{AbstractParameter{Float64}}(), Vector{Float64}(), OrderedDict{Symbol,Int}(),
 
@@ -231,14 +231,14 @@ end
 
 """
 ```
-init_parameters!(m::myModel1010depo)
+init_parameters!(m::myModel1010depo_err)
 ```
 
 Initializes the model's parameters, as well as empty values for the steady-state
 parameters (in preparation for `steadystate!(m)` being called to initialize
 those).
 """
-function init_parameters!(m::myModel1010depo)
+function init_parameters!(m::myModel1010depo_err)
     m <= parameter(:α, 0.1596, (1e-5, 0.999), (1e-5, 0.999), ModelConstructors.SquareRoot(), Normal(0.30, 0.05), fixed=false,
                    description="α: Capital elasticity in the intermediate goods sector's production function (also known as the capital share).",
                    tex_label="\\alpha")
@@ -444,6 +444,9 @@ function init_parameters!(m::myModel1010depo)
     m <= parameter(:ρ_corepce, 0.2320, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.2), fixed=false,
                    tex_label="\\rho_{pce}")
 
+                   m <= parameter(:ρ_deprate, 0.2320, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.2), fixed=false,
+                                  tex_label="\\rho_{r^d}")
+
     m <= parameter(:ρ_gdp, 0., (-1.0, 1.0), (-0.999, 0.999), ModelConstructors.SquareRoot(), Normal(0.0, 0.2), fixed=false,
                    tex_label="\\rho_{gdp}")
 
@@ -537,6 +540,9 @@ function init_parameters!(m::myModel1010depo)
     m <= parameter(:σ_corepce, 0.0999, (1e-8, 5.),(1e-8, 5.), ModelConstructors.Exponential(), RootInverseGamma(2, 0.10), fixed=false,
                    tex_label="\\sigma_{pce}")
 
+                   m <= parameter(:σ_deprate, 0.0999, (1e-8, 5.),(1e-8, 5.), ModelConstructors.Exponential(), RootInverseGamma(2, 0.10), fixed=false,
+                                  tex_label="\\sigma_{r^d}")
+
     m <= parameter(:σ_gdp, 0.1, (1e-8, 5.),(1e-8, 5.),ModelConstructors.Exponential(),RootInverseGamma(2, 0.10), fixed=false,
                    tex_label="\\sigma_{gdp}")
 
@@ -621,13 +627,13 @@ end
 
 """
 ```
-steadystate!(m::myModel1010depo)
+steadystate!(m::myModel1010depo_err)
 ```
 
 Calculates the model's steady-state values. `steadystate!(m)` must be called whenever
 the parameters of `m` are updated.
 """
-function steadystate!(m::myModel1010depo)
+function steadystate!(m::myModel1010depo_err)
     SIGWSTAR_ZERO = 0.5
 
     m[:z_star]   = log(1+m[:γ]) + m[:α]/(1-m[:α])*log(m[:Upsilon])
@@ -734,7 +740,7 @@ function steadystate!(m::myModel1010depo)
     return m
 end
 
-function model_settings!(m::myModel1010depo)
+function model_settings!(m::myModel1010depo_err)
 
     default_settings!(m)
 
@@ -766,7 +772,7 @@ end
 
 """
 ```
-parameter_groupings(m::myModel1010depo)
+parameter_groupings(m::myModel1010depo_err)
 ```
 
 Returns an `OrderedDict{String, Vector{Parameter}}` mapping descriptions of
@@ -774,7 +780,7 @@ parameter groupings (e.g. \"Policy Parameters\") to vectors of
 `Parameter`s. This dictionary is passed in as a keyword argument to
 `prior_table`.
 """
-function parameter_groupings(m::myModel1010depo)
+function parameter_groupings(m::myModel1010depo_err)
     steadystate = [:γ, :α, :β, :σ_c, :h, :ν_l, :δ, :Φ, :S′′, :ppsi,
                    :δ_gdpdef, :Lmean, :λ_w, :π_star, :g_star]
 
@@ -792,7 +798,7 @@ function parameter_groupings(m::myModel1010depo)
 
     error       = [:δ_gdpdef, :Γ_gdpdef, :ρ_gdp, :ρ_gdi, :ρ_gdpvar, :ρ_gdpdef, :ρ_corepce, :ρ_AAA,
                    :ρ_BBB, :ρ_lr, :ρ_tfp, :σ_gdp, :σ_gdi, :σ_gdpdef, :σ_corepce, :σ_AAA, :σ_BBB,
-                   :σ_lr, :σ_tfp]
+                   :σ_lr, :σ_tfp, :ρ_deprate, :σ_deprate]
 
     all_keys     = Vector[steadystate, sticky, policy, financial, processes, error]
     all_params   = map(keys -> [m[θ]::Parameter for θ in keys], all_keys)
@@ -813,13 +819,13 @@ end
 
 """
 ```
-shock_groupings(m::myModel1010depo)
+shock_groupings(m::myModel1010depo_err)
 ```
 
 Returns a `Vector{ShockGroup}`, which must be passed in to
 `plot_shock_decomposition`. See `?ShockGroup` for details.
 """
-function shock_groupings(m::myModel1010depo)
+function shock_groupings(m::myModel1010)
     gov      = ShockGroup("g", [:g_sh], RGB(0.70, 0.13, 0.13)) # firebrick
     bet_liq  = ShockGroup("b_liq", [:b_liqtil_sh, :b_liqp_sh], RGB(0.3, 0.3, 1.0))
     bet_safe = ShockGroup("b_safe", [:b_safetil_sh, :b_safep_sh], RGB(0.1, 0.6, 1.0))

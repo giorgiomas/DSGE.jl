@@ -1,6 +1,6 @@
  """
 ```
-pseudo_measurement(m::myModel1010depo{T}, TTT::Matrix{T}, RRR::Matrix{T},
+pseudo_measurement(m::Model1010depo_1spread{T}, TTT::Matrix{T}, RRR::Matrix{T},
                    CCC::Vector{T}) where {T<:AbstractFloat}
 ```
 
@@ -10,7 +10,7 @@ Assign pseudo-measurement equation (a linear combination of states):
 x_t = ZZ_pseudo*s_t + DD_pseudo
 ```
 """
-function pseudo_measurement(m::myModel1010depo{T},
+function pseudo_measurement(m::Model1010depo_1spread{T},
                             TTT::Matrix{T},
                             RRR::Matrix{T},
                             CCC::Vector{T}) where {T<:AbstractFloat}
@@ -83,22 +83,14 @@ function pseudo_measurement(m::myModel1010depo{T},
 	ZZ_pseudo[pseudo[:ExAnteRealRate],endo[:Eπ_t]] = -1
 	DD_pseudo[pseudo[:ExAnteRealRate]]             = m[:Rstarn] - 100. * (m[:π_star]-1.)
 
-	## Nominal risk-free Rate
-	ZZ_pseudo[pseudo[:NominalRate],endo[:R_t]]  = 1
-	DD_pseudo[pseudo[:NominalRate]]             = m[:Rstarn]
+	## Nominal FFR
+	ZZ_pseudo[pseudo[:NominalFFR], endo[:R_t]] = 1.
+	DD_pseudo[pseudo[:NominalFFR]] = m[:Rstarn]
 
 	## Ex Ante Real Deposit Rate
 	ZZ_pseudo[pseudo[:RealDepositRate],endo[:Rd_t]] = 1
 	ZZ_pseudo[pseudo[:RealDepositRate],endo[:Eπ_t]] = -1
-	DD_pseudo[pseudo[:RealDepositRate]]             = m[:Rstard] - 100. * (m[:π_star]-1.)
-
-	## Nominal Deposit Rate
-	ZZ_pseudo[pseudo[:NominalDepRate],endo[:Rd_t]]  = 1
-	DD_pseudo[pseudo[:NominalDepRate]]             = m[:Rstard]
-
-	## Nominal FFR
-	ZZ_pseudo[pseudo[:NominalFFR], endo[:R_t]] = 1.
-	DD_pseudo[pseudo[:NominalFFR]] = m[:Rstarn]
+	DD_pseudo[pseudo[:RealDepositRate]]             = m[:Rstarn] - 100. * (m[:π_star]-1.)
 
 	## Output: GDP
 	ZZ_pseudo[pseudo[:gdp], endo[:y_t]]          = 1.0
@@ -129,14 +121,6 @@ function pseudo_measurement(m::myModel1010depo{T},
 	ZZ_pseudo[pseudo[:LongRate], :] = ZZ_pseudo[pseudo[:NominalFFR], :]' * TTT10
 	DD_pseudo[pseudo[:LongRate]]    = m[:Rstarn]
 
-	## 10y inflaton expectations
-	ZZ_pseudo[pseudo[:LongInflation], :] = TTT10[endo[:π_t], :]
-    DD_pseudo[pseudo[:LongInflation]]    = 100*(m[:π_star]-1)
-
-	## 10-year real yield
-	ZZ_pseudo[pseudo[:LongRealRate], :] = ZZ_pseudo[pseudo[:LongRate], :] - ZZ_pseudo[pseudo[:LongInflation], :]
-	DD_pseudo[pseudo[:LongRealRate]] = m[:Rstarn] - 100*(m[:π_star]-1)
-
 	## 20 yrs forward transition matrix
     TTT20 = if subspec(m) == "ss16"
         eye(size(TTT,1))
@@ -149,14 +133,6 @@ function pseudo_measurement(m::myModel1010depo{T},
     ZZ_pseudo[pseudo[:BBBspread], endo[:R_t]]          = -1.0
     ZZ_pseudo[pseudo[:BBBspread], :]                   = ZZ_pseudo[pseudo[:BBBspread], :]' * TTT20
     DD_pseudo[pseudo[:BBBspread]]                      = 100*log(m[:spr]*m[:lnb_safe]*m[:lnb_liq])
-
-    ## AAA Spread
-    ZZ_pseudo[pseudo[:AAAspread], endo[:b_liq_t]]       = -(1.0-m[:λ_AAA])*(m[:σ_c]*(1 + m[:h]*exp(-m[:z_star])))/(1 - m[:h]*exp(-m[:z_star]))
-    ZZ_pseudo[pseudo[:AAAspread], endo[:ERtil_k_t]]     = m[:λ_AAA]
-    ZZ_pseudo[pseudo[:AAAspread], endo[:R_t]]           = -m[:λ_AAA]
-    ZZ_pseudo[pseudo[:AAAspread], :]                    = ZZ_pseudo[pseudo[:AAAspread], :]' * TTT20
-    DD_pseudo[pseudo[:AAAspread]]                       = 100*log(m[:lnb_liq]) + 100*m[:λ_AAA]*log(m[:spr]*m[:lnb_safe])
-
 
     if subspec(m) in ["ss2", "ss4", "ss22"]
         ## Expected Average Nominal Natural Rate
@@ -287,33 +263,12 @@ function pseudo_measurement(m::myModel1010depo{T},
         DD_pseudo[pseudo[:Forward10YearRealNaturalRate]]    = m[:Rstarn] - 100*(m[:π_star]-1)
     end
 
-    if subspec(m) in ["ss13", "ss18"]
-        ZZ_pseudo[pseudo[:LiquidityConvenienceYield], endo[:b_liq_t]] = 1.
-        DD_pseudo[pseudo[:LiquidityConvenienceYield]] = 100*log(m[:lnb_liq])
-
-        ZZ_pseudo[pseudo[:SafetyConvenienceYield], endo[:b_safe_t]] = 1.
-        DD_pseudo[pseudo[:SafetyConvenienceYield]] = 100*log(m[:lnb_safe])
-
-        ZZ_pseudo[pseudo[:SDF], endo[:r_f_t]]    = 1.
-        ZZ_pseudo[pseudo[:SDF], endo[:b_liq_t]]  = 1.
-        ZZ_pseudo[pseudo[:SDF], endo[:b_safe_t]] = 1.
-        DD_pseudo[pseudo[:SDF]] =  m[:Rstarn] - 100*(m[:π_star]-1) + 100*log(m[:lnb_liq]) + 100*log(m[:lnb_safe])
-
-        ZZ_pseudo[pseudo[:Forward20YearLiquidityConvenienceYield], :] = ZZ_pseudo[pseudo[:LiquidityConvenienceYield], :]' * TTT20_fwd
-        DD_pseudo[pseudo[:Forward20YearLiquidityConvenienceYield]] = 100*log(m[:lnb_liq])
-
-        ZZ_pseudo[pseudo[:Forward20YearSafetyConvenienceYield], :] = ZZ_pseudo[pseudo[:SafetyConvenienceYield], :]' * TTT20_fwd
-        DD_pseudo[pseudo[:Forward20YearSafetyConvenienceYield]] = 100*log(m[:lnb_safe])
-
-        ZZ_pseudo[pseudo[:Forward20YearSDF], :] = ZZ_pseudo[pseudo[:SDF], :]' * TTT20_fwd
-        DD_pseudo[pseudo[:Forward20YearSDF]]    = m[:Rstarn] - 100*(m[:π_star]-1) + 100*log(m[:lnb_liq]) + 100*log(m[:lnb_safe])
-    end
 
     ## Exogenous processes
     if subspec(m) in ["ss22"]
-        to_add = [:g_t, :b_liq_t, :b_safe_t, :μ_t, :z_t, :λ_f_t, :λ_w_t, :rm_t, :σ_ω_t, :μ_e_t,
+        to_add = [:g_t, :b_t, :μ_t, :z_t, :λ_f_t, :λ_w_t, :rm_t, :σ_ω_t, :μ_e_t,
                   :γ_t, :π_star_t]
-        to_add_addl = [:lr_t, :tfp_t, :e_gdpdef_t, :e_corepce_t, :e_gdp_t, :e_gdi_t, :e_BBB_t, :e_AAA_t]
+        to_add_addl = [:lr_t, :tfp_t, :e_gdpdef_t, :e_corepce_t, :e_gdp_t, :e_gdi_t]
         for i in to_add
             ZZ_pseudo[pseudo[i], endo[i]] = 1.
         end

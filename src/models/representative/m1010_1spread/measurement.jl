@@ -1,5 +1,5 @@
 """```
-measurement(m::myModel1010depo{T}, TTT::Matrix{T}, RRR::Matrix{T},
+measurement(m::Model1010_1spread{T}, TTT::Matrix{T}, RRR::Matrix{T},
             CCC::Vector{T}) where {T<:AbstractFloat}
 ```
 
@@ -17,7 +17,7 @@ Var(u_t) = EE
 Cov(ϵ_t, u_t) = 0
 ```
 """
-function measurement(m::myModel1010depo{T},
+function measurement(m::Model1010_1spread{T},
                      TTT::Matrix{T},
                      RRR::Matrix{T},
                      CCC::Vector{T}) where {T<:AbstractFloat}
@@ -77,12 +77,6 @@ function measurement(m::myModel1010depo{T},
     ZZ[obs[:obs_nominalrate], endo[:R_t]] = 1.0
     DD[obs[:obs_nominalrate]]             = m[:Rstarn]
 
-    ## Nominal deposit rate
-    if get_setting(m, :add_deposits)
-        ZZ[obs[:obs_depositrate], endo[:Rd_t]] = 1.0
-        DD[obs[:obs_depositrate]]              = m[:Rstard]
-    end
-
     ## Consumption Growth
     ZZ[obs[:obs_consumption], endo[:c_t]]      = 1.0
     ZZ[obs[:obs_consumption], endo_new[:c_t1]] = -1.0
@@ -114,21 +108,6 @@ function measurement(m::myModel1010depo{T},
     ZZ[obs[:obs_BBBspread], endo_new[:e_BBB_t]]  = 1.0
     DD[obs[:obs_BBBspread]]                      = 100*log(m[:spr]*m[:lnb_safe]*m[:lnb_liq])
 
-    ## AAA Spread
-    ZZ[obs[:obs_AAAspread], endo[:b_liq_t]]       = -(1.0-m[:λ_AAA])*(m[:σ_c]*(1 + m[:h]*exp(-m[:z_star])))/(1 - m[:h]*exp(-m[:z_star]))
-    ZZ[obs[:obs_AAAspread], endo[:ERtil_k_t]]     = m[:λ_AAA]
-    ZZ[obs[:obs_AAAspread], endo[:R_t]]           = -m[:λ_AAA]
-    # the previous 3 lines create a row of ZZ which is a vector of
-    # zeros except for the coefficients on the relevant states. We
-    # multiply this by TTT20 to adjust for the 20-year maturity of the
-    # bond, and reassign the result to the AAA spread row of the ZZ
-    # matrix, overwriting the original coefficients. Then we add a
-    # coefficient for the measurement error.
-    # λ_AAA is fixed to 0 in this model.
-    ZZ[obs[:obs_AAAspread], :]                    = ZZ[obs[:obs_AAAspread], :]' * TTT20
-    ZZ[obs[:obs_AAAspread], endo_new[:e_AAA_t]]   = 1.0
-    DD[obs[:obs_AAAspread]]                       = 100*log(m[:lnb_liq]) + 100*m[:λ_AAA]*log(m[:spr]*m[:lnb_safe])
-
     ## 10 yrs infl exp
     TTT10                          = (1/40)*((UniformScaling(1.) - TTT)\(UniformScaling(1.) - TTT^40))
     ZZ[obs[:obs_longinflation], :] = TTT10[endo[:π_t], :]
@@ -146,10 +125,8 @@ function measurement(m::myModel1010depo{T},
     ZZ[obs[:obs_tfp], endo_new[:u_t1]]  = -(m[:α]/( (1-m[:α])*(1-m[:Iendoα]) + 1*m[:Iendoα]) )
 
     QQ[exo[:g_sh], exo[:g_sh]]                  = m[:σ_g]^2
-    QQ[exo[:b_liqtil_sh], exo[:b_liqtil_sh]]    = m[:σ_b_liqtil]^2
-    QQ[exo[:b_liqp_sh], exo[:b_liqp_sh]]        = m[:σ_b_liqp]^2
-    QQ[exo[:b_safetil_sh], exo[:b_safetil_sh]]  = m[:σ_b_safetil]^2
-    QQ[exo[:b_safep_sh], exo[:b_safep_sh]]      = m[:σ_b_safep]^2
+    QQ[exo[:b_til_sh], exo[:b_til_sh]]    = m[:σ_b_til]^2
+    QQ[exo[:b_p_sh], exo[:b_p_sh]]        = m[:σ_b_p]^2
     QQ[exo[:μ_sh], exo[:μ_sh]]                  = m[:σ_μ]^2
     QQ[exo[:z_sh], exo[:z_sh]]                  = m[:σ_z]^2
     QQ[exo[:λ_f_sh], exo[:λ_f_sh]]              = m[:σ_λ_f]^2
@@ -166,7 +143,6 @@ function measurement(m::myModel1010depo{T},
     QQ[exo[:corepce_sh], exo[:corepce_sh]]      = m[:σ_corepce]^2
     QQ[exo[:gdp_sh], exo[:gdp_sh]]              = m[:σ_gdp]^2
     QQ[exo[:gdi_sh], exo[:gdi_sh]]              = m[:σ_gdi]^2
-    QQ[exo[:AAA_sh], exo[:AAA_sh]]              = m[:σ_AAA]^2
     QQ[exo[:BBB_sh], exo[:BBB_sh]]              = m[:σ_BBB]^2
 
     # These lines set the standard deviations for the anticipated shocks. They

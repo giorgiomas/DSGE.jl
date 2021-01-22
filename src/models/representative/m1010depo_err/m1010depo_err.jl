@@ -160,7 +160,7 @@ function init_model_indices!(m::Model1010depo_err)
     # Lagged states and observables measurement error
     endogenous_states_augmented = [
         :y_t1, :c_t1, :i_t1, :w_t1, :π_t1_dup, :L_t1, :u_t1, :Et_π_t, :lr_t, :tfp_t, :e_gdpdef_t,
-        :e_corepce_t, :e_gdp_t, :e_gdi_t, :e_gdp_t1, :e_gdi_t1, :e_BBB_t, :e_AAA_t :e_deprate_t]
+        :e_corepce_t, :e_gdp_t, :e_gdi_t, :e_gdp_t1, :e_gdi_t1, :e_BBB_t, :e_AAA_t, :e_deprate_t]
 
     # Observables
     observables = keys(m.observable_mappings)
