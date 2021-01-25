@@ -555,7 +555,9 @@ function init_parameters!(m::Model1010depo_alt)
     # steady states
     m <= SteadyStateParameter(:z_star, NaN, tex_label="\\z_*")
     m <= SteadyStateParameter(:rstar, NaN, tex_label="\\r_*")
+    m <= SteadyStateParameter(:rstard, NaN, tex_label="\\r_*_d")
     m <= SteadyStateParameter(:Rstarn, NaN, tex_label="\\R_*_n")
+    m <= SteadyStateParameter(:Rstard, NaN, tex_label="\\R_*_d")
     m <= SteadyStateParameter(:r_k_star, NaN, description="Steady-state short-term rate of return on capital.", tex_label="\\r^k_*")
     m <= SteadyStateParameter(:wstar, NaN, tex_label="\\w_*")
     m <= SteadyStateParameter(:Lstar, NaN, tex_label="\\L_*")
@@ -591,6 +593,8 @@ function steadystate!(m::Model1010depo_alt)
     m[:z_star]   = log(1+m[:γ]) + m[:α]/(1-m[:α])*log(m[:Upsilon])
     m[:rstar]    = exp(m[:σ_c]*m[:z_star]) / (m[:β] * m[:lnb])
     m[:Rstarn]   = 100*(m[:rstar]*m[:π_star] - 1)
+    m[:rstard]   = m[:rstar] * m[:lnb_safe] * m[:lnb_liq]
+    m[:Rstard]   = 100*(m[:rstard]*m[:π_star] - 1)
     m[:r_k_star] = m[:spr]* m[:lnb]*m[:rstar]*m[:Upsilon] - (1-m[:δ])
     m[:wstar]    = (m[:α]^m[:α] * (1-m[:α])^(1-m[:α]) * m[:r_k_star]^(-m[:α]) / m[:Φ])^(1/(1-m[:α]))
     m[:Lstar]    = 1.

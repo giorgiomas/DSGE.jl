@@ -50,6 +50,8 @@ function init_subspec!(m::Model1010depo_1spread)
         return ss21!(m)
     elseif subspec(m) == "ss22"
         return ss22!(m)
+    elseif subspec(m) == "ss23"
+        return ss23!(m)
     else
         error("This subspec is not defined.")
     end
@@ -511,4 +513,26 @@ end
 function ss22!(m::Model1010depo_1spread)
     # ss20 but with inflation, long run inflation, etc. as pseudo-observables
     ss20!(m)
+end
+
+function ss23!(m::Model1010depo_1spread)
+    # ss13 with ρ_z_p fixed at 0.99
+
+    m <= parameter(:ρ_BBB, 0.5, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.1),
+                   fixed=false,
+                   description="ρ_BBB: AR(1) coefficient in the BBB spread process.",
+                   tex_label="\\rho_{BBB}")
+
+    m <= parameter(:σ_BBB, 0., (1e-8, 5.),(1e-8, 5.),ModelConstructors.Exponential(),RootInverseGamma(2., 0.10),
+                   fixed=true,
+                   description="σ_BBB: Standard deviation on the AR(1) process for measurement error on the BBB spread.",
+                   tex_label="\\sigma_{BBB}")
+
+    m <= parameter(:σ_b_p, sqrt(1/400)/4, (1e-8, 5.), (1e-8, 5.), ModelConstructors.Exponential(), RootInverseGamma(100., sqrt(1/400)/4),
+                   fixed=false,
+                   description="σ_b_p: Standard deviation of stationary component of asset preference shifter process.",
+                   tex_label="\\sigma_{b^p}")
+
+    m <= parameter(:ρ_z_p,     0.99, (0.0, 1.0),      (0.0, 1.0), ModelConstructors.SquareRoot(),    BetaAlt(0.5, 0.2),
+                   fixed=true, description="ρ_z_p: No description available.", tex_label="\\rho_{z^p}")
 end

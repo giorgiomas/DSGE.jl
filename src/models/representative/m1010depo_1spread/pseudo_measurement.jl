@@ -90,7 +90,7 @@ function pseudo_measurement(m::Model1010depo_1spread{T},
 	## Ex Ante Real Deposit Rate
 	ZZ_pseudo[pseudo[:RealDepositRate],endo[:Rd_t]] = 1
 	ZZ_pseudo[pseudo[:RealDepositRate],endo[:Eπ_t]] = -1
-	DD_pseudo[pseudo[:RealDepositRate]]             = m[:Rstarn] - 100. * (m[:π_star]-1.)
+	DD_pseudo[pseudo[:RealDepositRate]]             = m[:Rstard] - 100. * (m[:π_star]-1.)
 
 	## Output: GDP
 	ZZ_pseudo[pseudo[:gdp], endo[:y_t]]          = 1.0

@@ -501,7 +501,9 @@ function init_parameters!(m::Model805_alt2)
     # steady states
     m <= SteadyStateParameter(:zstar,  NaN, description="steady-state growth rate of productivity", tex_label="\\z_*")
     m <= SteadyStateParameter(:rstar,   NaN, description="steady-state something something", tex_label="\\r_*")
+    m <= SteadyStateParameter(:rstard, NaN, tex_label="\\r_*_d")
     m <= SteadyStateParameter(:Rstarn,  NaN, description="steady-state something something", tex_label="\\R_*_n")
+    m <= SteadyStateParameter(:Rstard, NaN, tex_label="\\R_*_d")
     m <= SteadyStateParameter(:rkstar,  NaN, description="steady-state something something", tex_label="\\BLAH")
     m <= SteadyStateParameter(:wstar,   NaN, description="steady-state something something", tex_label="\\w_*")
     m <= SteadyStateParameter(:Lstar,   NaN, description="steady-state something something", tex_label="\\L_*")
@@ -525,6 +527,8 @@ function steadystate!(m::Model805_alt2)
     m[:zstar]    = log(1+m[:γ]) + m[:α]/(1-m[:α])*log(m[:Upsilon])
     m[:rstar]    = exp(m[:σ_c]*m[:zstar]) / (m[:β] * m[:lnb])
     m[:Rstarn]   = 100*(m[:rstar]*m[:π_star] - 1)
+    m[:rstard]   = m[:rstar] * m[:lnb]
+    m[:Rstard]   = 100*(m[:rstard]*m[:π_star] - 1)
     m[:rkstar]   = m[:lnb]*m[:rstar]*m[:Upsilon] - (1-m[:δ])
     m[:wstar]    = (m[:α]^m[:α] * (1-m[:α])^(1-m[:α]) * m[:rkstar]^(-m[:α]) / m[:Φ])^(1/(1-m[:α]))
     m[:Lstar]    = 1.
