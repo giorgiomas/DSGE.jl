@@ -515,7 +515,7 @@ function ss22!(m::Model1010_1spread)
     ss20!(m)
 end
 
-function ss23!(m::Model1010depo_1spread)
+function ss23!(m::Model1010_1spread)
     # no m.e. on the Baa spread
 
     m <= parameter(:ρ_BBB, 0.5, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.1),
