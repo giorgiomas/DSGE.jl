@@ -90,11 +90,11 @@ function pseudo_measurement(m::myModel1010{T},
 	## Ex Ante Real Deposit Rate
 	ZZ_pseudo[pseudo[:RealDepositRate],endo[:Rd_t]] = 1
 	ZZ_pseudo[pseudo[:RealDepositRate],endo[:Eπ_t]] = -1
-	DD_pseudo[pseudo[:RealDepositRate]]             = m[:Rstarn] - 100. * (m[:π_star]-1.)
+	DD_pseudo[pseudo[:RealDepositRate]]             = m[:Rstard] - 100. * (m[:π_star]-1.)
 
 	## Nominal Deposit Rate
 	ZZ_pseudo[pseudo[:NominalDepRate],endo[:Rd_t]]  = 1
-	DD_pseudo[pseudo[:NominalDepRate]]             = m[:Rstarn]
+	DD_pseudo[pseudo[:NominalDepRate]]             = m[:Rstard]
 
 	## Nominal FFR
 	ZZ_pseudo[pseudo[:NominalFFR], endo[:R_t]] = 1.
