@@ -560,7 +560,7 @@ function ss22!(m::Model1010)
     ss20!(m)
 end
 
-function ss23!(m::Model1010depo)
+function ss23!(m::Model1010)
     # ss20 + σ_c prior centered on a larger value (higher complementarity)
 
     m <= parameter(:ρ_AAA, 0.5, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.1),
