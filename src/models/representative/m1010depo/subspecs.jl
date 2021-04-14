@@ -56,6 +56,8 @@ function init_subspec!(m::Model1010depo)
         return ss24!(m)
     elseif subspec(m) == "ss25"
         return ss25!(m)
+    elseif subspec(m) == "ss26"
+        return ss26!(m)
     else
         error("This subspec is not defined.")
     end
@@ -674,6 +676,53 @@ function ss25!(m::Model1010depo)
                    fixed=true, description="ρ_z_p: No description available.", tex_label="\\rho_{z^p}")
 
     m <= parameter(:σ_c, 0.943, (1e-5, 10.), (1e-5, 10.), ModelConstructors.Exponential(), Normal(2.5, 0.37), fixed=true,
+                   description="σ_c: Coefficient of relative risk aversion.",
+                   tex_label="\\sigma_{c}")
+
+    m <= parameter(:ψ1, 1.598, (1e-5, 10.), (1e-5, 10.00), ModelConstructors.Exponential(), Normal(1.5, 0.25), fixed=true,
+                   description="ψ₁: Weight on inflation gap in monetary policy rule.",
+                   tex_label="\\psi_1")
+
+    m <= parameter(:ψ2, 0.181, (-0.5, 0.5), (-0.5, 0.5), ModelConstructors.Untransformed(), Normal(0.12, 0.05), fixed=true,
+                   description="ψ₂: Weight on output gap in monetary policy rule.",
+                   tex_label="\\psi_2")
+end
+
+
+
+function ss26!(m::Model1010depo)
+    # ss20 + σ_c fixed at posterior mode of m1010(ss20) from my computations, and Taylor rule response to
+    # inflation and output gap fixed at m1010depo(ss20) posterior mean
+
+    m <= parameter(:ρ_AAA, 0.5, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.1),
+                   fixed=false,
+                   description="ρ_AAA: AR(1) coefficient in the AAA spread process.",
+                   tex_label="\\rho_{AAA}")
+
+    m <= parameter(:ρ_BBB, 0.5, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.1),
+                   fixed=false,
+                   description="ρ_BBB: AR(1) coefficient in the BBB spread process.",
+                   tex_label="\\rho_{BBB}")
+
+    m <= parameter(:σ_BBB, 0.1, (1e-8, 5.),(1e-8, 5.),ModelConstructors.Exponential(),RootInverseGamma(2., 0.10),
+                   fixed=false,
+                   description="σ_BBB: Standard deviation on the AR(1) process for measurement error on the BBB spread.",
+                   tex_label="\\sigma_{BBB}")
+
+    m <= parameter(:σ_b_liqp, sqrt(1/400)/4, (1e-8, 5.), (1e-8, 5.), ModelConstructors.Exponential(), RootInverseGamma(100., sqrt(1/400)/4),
+                   fixed=false,
+                   description="σ_b_liqp: Standard deviation of stationary component of liquid asset preference shifter process.",
+                   tex_label="\\sigma_{b^p, liq}")
+
+    m <= parameter(:σ_b_safep, sqrt(1/400)/4, (1e-8, 5.), (1e-8, 5.), ModelConstructors.Exponential(), RootInverseGamma(100., sqrt(1/400)/4),
+                   fixed=false,
+                   description="σ_b_safep: Standard deviation of stationary component of safe asset preference shifter process.",
+                   tex_label="\\sigma_{b^p, safe}")
+
+    m <= parameter(:ρ_z_p,     0.99, (0.0, 1.0),      (0.0, 1.0), ModelConstructors.SquareRoot(),    BetaAlt(0.5, 0.2),
+                   fixed=true, description="ρ_z_p: No description available.", tex_label="\\rho_{z^p}")
+
+    m <= parameter(:σ_c, 0.907, (1e-5, 10.), (1e-5, 10.), ModelConstructors.Exponential(), Normal(2.5, 0.37), fixed=true,
                    description="σ_c: Coefficient of relative risk aversion.",
                    tex_label="\\sigma_{c}")
 
