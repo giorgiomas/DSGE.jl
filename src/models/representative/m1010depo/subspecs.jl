@@ -58,6 +58,8 @@ function init_subspec!(m::Model1010depo)
         return ss25!(m)
     elseif subspec(m) == "ss26"
         return ss26!(m)
+    elseif subspec(m) == "ss27"
+        return ss27!(m)
     else
         error("This subspec is not defined.")
     end
@@ -733,4 +735,53 @@ function ss26!(m::Model1010depo)
     m <= parameter(:ψ2, 0.181, (-0.5, 0.5), (-0.5, 0.5), ModelConstructors.Untransformed(), Normal(0.12, 0.05), fixed=true,
                    description="ψ₂: Weight on output gap in monetary policy rule.",
                    tex_label="\\psi_2")
+end
+
+
+function ss27!(m::Model1010depo)
+    # ss18 with SS spread and SS safety and liquidity premia fixed at 0 (in order to accomodate demeaned corporate spreads)
+
+    m <= parameter(:ρ_AAA, 0.5, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.1),
+                   fixed=false,
+                   description="ρ_AAA: AR(1) coefficient in the AAA spread process.",
+                   tex_label="\\rho_{AAA}")
+
+    m <= parameter(:ρ_BBB, 0.5, (0.0, 1.0), (0.0, 1.0), ModelConstructors.SquareRoot(), BetaAlt(0.5, 0.1),
+                   fixed=false,
+                   description="ρ_BBB: AR(1) coefficient in the BBB spread process.",
+                   tex_label="\\rho_{BBB}")
+
+    m <= parameter(:σ_BBB, 0.1, (1e-8, 5.),(1e-8, 5.),ModelConstructors.Exponential(),RootInverseGamma(2., 0.10),
+                   fixed=false,
+                   description="σ_BBB: Standard deviation on the AR(1) process for measurement error on the BBB spread.",
+                   tex_label="\\sigma_{BBB}")
+
+    m <= parameter(:σ_b_liqp, sqrt(1/400)/4, (1e-8, 5.), (1e-8, 5.), ModelConstructors.Exponential(), RootInverseGamma(100., sqrt(1/400)/4),
+                   fixed=false,
+                   description="σ_b_liqp: Standard deviation of stationary component of liquid asset preference shifter process.",
+                   tex_label="\\sigma_{b^p, liq}")
+
+    m <= parameter(:σ_b_safep, sqrt(1/400)/4, (1e-8, 5.), (1e-8, 5.), ModelConstructors.Exponential(), RootInverseGamma(100., sqrt(1/400)/4),
+                   fixed=false,
+                   description="σ_b_safep: Standard deviation of stationary component of safe asset preference shifter process.",
+                   tex_label="\\sigma_{b^p, safe}")
+
+    m <= parameter(:ρ_z_p,     0.99, (0.0, 1.0),      (0.0, 1.0), ModelConstructors.SquareRoot(),    BetaAlt(0.5, 0.2),
+                   fixed=true, description="ρ_z_p: No description available.", tex_label="\\rho_{z^p}")
+
+    m <= parameter(:lnb_liq, 0., (1e-5, 10.),   (1e-5, 10.), ModelConstructors.Exponential(), GammaAlt(0.47, 0.1),
+                   fixed=true, scaling = x -> (1 + x/100)^0.25,
+                   description="ln(b_liq_*): Liquidity premium (percent annualized).",
+                   tex_label="ln(b_{liq})")
+
+    m <= parameter(:lnb_safe, 0.,  (1e-5, 10.),   (1e-5, 10.), ModelConstructors.Exponential(), GammaAlt(0.26, 0.1),
+                   fixed=true, scaling = x -> (1 + x/100)^0.25,
+                   description="ln(b_safe_*): Safety premium (percent annualized).",
+                   tex_label="ln(b_{safe})")
+
+    m <= parameter(:spr, 0.00001, (0., 100.), (1e-5, 0.), ModelConstructors.Exponential(), GammaAlt(1., 0.1), fixed=true,
+                   scaling = x -> (1 + x/100)^0.25,
+                   description="spr_*: Steady-state level of spread.",
+                   tex_label="SP_*")
+
 end
