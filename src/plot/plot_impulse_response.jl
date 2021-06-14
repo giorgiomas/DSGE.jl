@@ -87,6 +87,8 @@ end
 # Plots two IRFs on the same plot, with which_model indicating which
 # model to use for things like where to save these plots and which model to use
 # to grab descriptions of series.
+# my_labels: vector of two strings to insert two legend entries that identify
+# the two models (e.g. "m1010" and "m1010depo")
 function plot_impulse_response(m1::AbstractDSGEModel, m2::AbstractDSGEModel,
                                shock::Symbol, vars::Vector{Symbol}, class::Symbol,
                                input_type1::Symbol, input_type2::Symbol,
@@ -104,6 +106,7 @@ function plot_impulse_response(m1::AbstractDSGEModel, m2::AbstractDSGEModel,
                                titles::Vector{String} = String[],
                                addl_text::String = "",
                                verbose::Symbol = :low,
+                               my_labels::Vector{String} = String[],
                                kwargs...)
     # Read in MeansBands
     mb1 = read_mb(m1, input_type1, cond_type1, Symbol(:irf, class), forecast_string = forecast_string1)
@@ -125,11 +128,11 @@ function plot_impulse_response(m1::AbstractDSGEModel, m2::AbstractDSGEModel,
         plots[var] = irf(shock, var, mb1, MeansBands();
                          title = title, input_type = input_type1, input_type2 = Symbol(),
                          bands_color = bands_color1, bands_alpha = bands_alpha1,
-                         bands_pcts = bands_pcts, mean_color = bands_color1, kwargs...)
+                         bands_pcts = bands_pcts, mean_color = bands_color1, label=my_labels[1], legendfont=16, kwargs...)
         irf!(shock, var, mb2, MeansBands();
              title = title, input_type = input_type2, input_type2 = Symbol(),
              bands_color = bands_color2, bands_alpha = bands_alpha2,
-             bands_pcts = bands_pcts, mean_color = bands_color2, kwargs...)
+             bands_pcts = bands_pcts, mean_color = bands_color2, label=my_labels[2], kwargs...)
 
         # Save plot
         if !isempty(plotroot)
@@ -211,7 +214,7 @@ irf
 
     # Mean
     @series begin
-        label     := label_mean_bands ? "Mean"*string(input_type) : ""
+        #label     := label_mean_bands ? "Mean"*string(input_type) : ""    # my uncomment
         linewidth := 2
         linecolor := mean_color
         quarters_ahead, sign * mb.means[!, varshock]
