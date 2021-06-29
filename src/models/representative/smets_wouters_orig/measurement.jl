@@ -79,11 +79,17 @@ function measurement(m::SmetsWoutersOrig{T},
 
     # These lines set the standard deviations for the anticipated
     # shocks to be equal to the standard deviation for the
-    # unanticipated policy shock
+    # unanticipated policy shock (unless the subspec is ss3)
     for i = 1:n_anticipated_shocks(m)
         ZZ[obs[Symbol("obs_nominalrate$i")], :] = ZZ[obs[:obs_nominalrate], :]' * (TTT^i)
         DD[obs[Symbol("obs_nominalrate$i")]]    = m[:Rstarn]
-        QQ[exo[Symbol("rm_shl$i")], exo[Symbol("rm_shl$i")]] = m[Symbol("σ_rm")]^2 / 16
+
+        if subspec(m) == "ss3"
+            QQ[exo[Symbol("rm_shl$i")], exo[Symbol("rm_shl$i")]] = m[Symbol("σ_r_m$i")]^2
+        else
+            QQ[exo[Symbol("rm_shl$i")], exo[Symbol("rm_shl$i")]] = m[Symbol("σ_rm")]^2 /
+            n_anticipated_shocks(m)
+        end
     end
 
     # Adjustment to DD because measurement equation assumes CCC is the zero vector

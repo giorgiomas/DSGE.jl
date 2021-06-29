@@ -15,6 +15,8 @@ function init_subspec!(m::SmetsWoutersOrig)
     elseif subspec(m) =="ss2"
         # Diffuse prior
         ss2!(m)
+    elseif subspec(m) =="ss3"
+        ss3!(m)
     else
         error("This subspec is not defined.")
     end
@@ -192,5 +194,22 @@ m <= parameter(:g_star, 0.1800, fixed=true,
 
     m <= parameter(:σ_λ_w, 0.2089, (1e-8, 5.), (1e-8, 5.), ModelConstructors.Exponential(), RootInverseGamma(2, 0.10), fixed=false,
                    tex_label="\\sigma_{\\lambda_w}")
+
+end
+
+
+function ss3!(m::SmetsWoutersOrig)
+    # allow different standard deviations for the anticipated policy shocks
+    for i = 1:n_anticipated_shocks_padding(m)
+        if i < 13
+            m <= parameter(Symbol("σ_r_m$i"), .2, (1e-7, 100.), (1e-5, 0.), ModelConstructors.Exponential(), RootInverseGamma(4, .2), fixed=false,
+                           description="σ_r_m$i: Standard deviation of the $i-period-ahead anticipated policy shock.",
+                           tex_label=@sprintf("\\sigma_{%d,r}",i))
+        else
+            m <= parameter(Symbol("σ_r_m$i"), .00, (1e-7, 100.), (1e-5, 0.), ModelConstructors.Exponential(), RootInverseGamma(4, .2), fixed=true,
+                           description="σ_r_m$i: Standard deviation of the $i-period-ahead anticipated policy shock.",
+                           tex_label=@sprintf("\\sigma_{%d,r}",i))
+        end
+    end
 
 end
